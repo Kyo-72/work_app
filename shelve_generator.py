@@ -3,6 +3,10 @@ import shelve
 def show_shelf(f):
     for name,addr in f.items():
         print('{}:{}'.format(name,addr))
+
+def show_addr(f):
+    for name,addr in f.items():
+        print("{}".format(addr))
     
 def add_shelf(f):
 
@@ -43,6 +47,7 @@ while 1:
     print('追加(1)')
     print('削除(2)')
     print('プログラムを終了(3)')
+    print('メールアドレスのみを表示(4)')
     print('keyを全て削除(112233)')
 
     n = int(input())
@@ -54,6 +59,8 @@ while 1:
         add_shelf(shelf_file)
     elif n == 2:
         del_shelf(shelf_file)
+    elif n == 4:
+        show_addr(shelf_file)
     elif n == 112233:
         alldel_shelf(shelf_file)
     else:
