@@ -22,7 +22,7 @@ options.add_argument('--headless')
 
 
 
-def getSchedule():
+def getSchedule(days_later):
 
 
 
@@ -72,14 +72,28 @@ def getSchedule():
     for i in range(len(all_lessons_schedule)):
         #一人取り出す
         today_lessons_schedule = all_lessons_schedule[i].find('td',attrs = {'class':'today'})
-        
-        #例外はじく
-        if(today_lessons_schedule != None):
-            #print(today_lessons_schedule)
+        try:
+            
+            #リストの先頭にclass = todayのオブジェクトを入れる
+            lessons_schedule = [today_lessons_schedule]
+            #class = todayの兄弟要素をリストに入れる
+            lessons_schedule +=   list( today_lessons_schedule.next_sibling.next_siblings ) 
+            
             #matchオブジェクトを生成
-            lesson_mo = lesson_time_regex.findall(today_lessons_schedule.text)
+            
+            #空白を処理する
+            lessons_schedule = [l for l in lessons_schedule if l != "\n"]
+            
+            
+
+    
+            lesson_mo = lesson_time_regex.findall(lessons_schedule[days_later].text)
             if( len(lesson_mo) ):
               lessons[ all_lessons_schedule[i].find('th').text ] = convert.Convert_To_Bit(lesson_mo)
+            
+        #日付欄は読み飛ばす
+        except AttributeError:
+            continue
                       
                         
   
@@ -89,4 +103,3 @@ def getSchedule():
     return lessons
 
 
-#getSchedule()
