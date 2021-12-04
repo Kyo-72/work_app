@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{%block content%}
+
+    <h1>メールアドレスを追加</h1>
+
+    <a href="../"role="button">元に戻る元に戻る</a>
+
+    <h2>登録済みメールアドレス一覧</h2>
+    <p>
+        <select name="address_list" size="10">   
+            {%  for name,address in info_dict.items():　%}
+                <option value={{name}}>{{name + "\t:\t" + address}}</option>
+            {% endfor %}
+                
+            
+        </select>
+    </p>
+
+
+    <form method="post">
+
+        
+        <h2>名前を入力してください（姓/名）</h2>
+    
+        <label for="last_name">姓:</label>
+    
+        <input type="text" id="last_name" name="last_name" required
+           minlength="1" maxlength="20" size="10">
+    
+        <label for="first_name">名:</label>
+    
+        <input type="text" id="first_name" name="first_name" required
+           minlength="1" maxlength="20" size="10">
+    
+    
+        <h2>メールアドレスを入力してください</h2>
+    
+        <label for="email">Enter your globex.com email:</label>
+        <input type="email" id="email" name="email"  size="30" required>
+    
+        <p><input type="submit" value="追加する"></p>
+        
+    </form>
+
+
+
+{% endblock %}
+    

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <h1>
+        出勤メールプログラム
+    </h1>
+    <p>現在の設定日時</p>
+    <p>{{exe_date}}</p>
+    <p>{{exe_time}}</p>
+
+    <a href="/add_email"role="button">メールアドレス追加</a>
+
+    <form method="post">
+
+        <p>
+        <select name="exe_day">
+        <option value="当日">当日</option>
+        <option value="前日">前日</option>
+        <option value="二日前">二日前</option>
+        <option value="三日前">三日前</option>
+        </select>
+        </p>
+
+        <input type="time" name="exe_time" value={{exe_time}}>
+        
+        <p><input type="submit" value="送信する"></p>
+        
+    </form>
+    
+
+
+
+{% endblock %}
+    
