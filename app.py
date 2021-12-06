@@ -16,6 +16,9 @@ db = SQLAlchemy(app)
 #初期値
 exe_date = "一日前"
 exe_time = "22:00"
+#プロセス初期化
+cmd = "python3 email_programs/main.py {} {}".format(exe_date,exe_time)
+p = subprocess.Popen(cmd.split(" "))
 
 #サブプロセスを起動.
 def inti_systems():
@@ -27,6 +30,8 @@ def index():
     #index.html
     global exe_date
     global exe_time
+    global p
+
     #GEtなら現在の設定日時を表示する
     if request.method == "GET":
         return render_template("index.html",exe_date=exe_date,exe_time=exe_time)
@@ -35,6 +40,12 @@ def index():
     else:
         exe_date = request.form.get("exe_day")
         exe_time = request.form.get("exe_time")
+        #プロセスをキル、コマンドを再設定後、プロセスを再起動
+        p.kill()
+        cmd = "python3 email_programs/main.py {} {}".format(exe_date,exe_time)
+        p = subprocess.Popen(cmd.split(" "))
+        print(os.getcwd())
+
         return redirect("/")
         
 

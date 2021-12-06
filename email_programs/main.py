@@ -4,6 +4,9 @@ import create_tolist
 import sendemail
 import get_schedule
 import time
+import subprocess
+import os
+import sys
 
 def convert_into_num(date):
     res = 0
@@ -19,8 +22,6 @@ def convert_into_num(date):
 
 def task(days_later):
 
-    #何日後の出勤をメールするか
-    days_later = convert_into_num(date)
     #まいくらすから出勤コーチと授業数をスクレイピング.days_later日後の出勤コーチとコマ数のdictを返す
     dict = get_schedule.getSchedule(days_later)
     #メールをテキストファイルに出6力
@@ -32,16 +33,17 @@ def task(days_later):
 
 
 
+args = sys.argv
+
+exe_date = args[1]
+exe_time = args[2]
 
 
+#毎日0時に更新する
+schedule.every().day.at(exe_time).do(task,days_later=convert_into_num(exe_date))
 
-def sys_main(date,time):
-
-    #毎日0時に更新する
-    schedule.every().day.at(time).do(task,days_later=convert_into_num(date))
-
-    while True:
-        schedule.run_pending()
-        time.sleep(1)
+while True:
+    schedule.run_pending()
+    time.sleep(1)
     
 
