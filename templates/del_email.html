@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{%block content%}
+
+    <h1>メールアドレスを削除</h1>
+
+    <a href="../"role="button">元に戻る</a>
+
+    
+    <form method="post">
+        
+        <p>
+            <select name="address" >   
+                {%  for name,address in info_dict.items():　%}
+                    <option value= {{address}}>{{name + "\t:\t" + address}}</option>
+                {% endfor %}          
+            </select>
+        </p>     
+
+        <p><input type="submit" value="削除する"></p>
+        
+    </form>
+
+
+
+{% endblock %}
+    

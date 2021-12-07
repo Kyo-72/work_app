@@ -47,11 +47,16 @@ def add_info(file_name,first_name,last_name,address):
     update_file(info,file_name)
 
     
-def del_info(file_name,info,name):
+def del_info(file_name,address):
+    info = read_file(file_name)
+
+    for name,add in info.items():
+        if(address == add):
+            del info[name]
+            break
     
-    del info[name]
     #ファイルへ書き込み
-    update(info,file_name)
+    update_file(info,file_name)
 
 
         

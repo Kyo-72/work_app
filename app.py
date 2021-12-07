@@ -48,7 +48,7 @@ def index():
 
         return redirect("/")
         
-
+#メールアドレスを追加する
 @app.route("/add_email",methods=["GET","POST"])
 def add_email():
     if request.method == "GET":
@@ -64,6 +64,19 @@ def add_email():
         email_resister.add_info(ADDRESS_FILE,first_name,last_name,email)
         return redirect("/add_email")
 
+#メールアドレスを削除する
+@app.route("/del_email",methods=["GET","POST"])
+def del_email():
+    if request.method == "GET":
+        #現在のメールアドレスと名前の情報を取得(info[name] = addres)
+        info_dict = email_resister.read_file(ADDRESS_FILE)
+        return render_template("del_email.html",info_dict=info_dict)
+    else:
+        #選択されたアドレスを削除する
+        address = request.form["address"] 
+        
+        email_resister.del_info(ADDRESS_FILE,address)
+        return redirect("/")
 
         
 """

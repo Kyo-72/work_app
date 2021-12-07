@@ -1,14 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
 
+    <link rel="stylesheet" href="static/css/index.css">  
+
     <h1>
         出勤メールプログラム
     </h1>
-    <p>現在の設定日時</p>
-    <p>{{exe_date}}</p>
-    <p>{{exe_time}}</p>
 
-    <a href="/add_email"role="button">メールアドレス追加</a>
+    <table>
+        <tr>
+            <th>
+                <p>現在の設定日時</p>
+            </th>
+        </tr>
+        <tr>
+            <td> <p>{{exe_date}}</p></td>
+        </tr>
+        <tr>
+            <td><p>{{exe_time}}</p></td>
+        </tr>
+    </table>
+    
+   
+    
+
+    <p><a href="/add_email"role="button">メールアドレス追加</a></p>
+    <p><a href="/del_email"role="button">メールアドレス削除</a></p>
+    
+
 
     <form method="post">
 
