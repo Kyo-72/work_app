@@ -17,7 +17,7 @@ db = SQLAlchemy(app)
 exe_date = "一日前"
 exe_time = "22:00"
 #プロセス初期化
-cmd = "python3 email_programs/main.py {} {}".format(exe_date,exe_time)
+cmd = "python email_programs/main.py {} {}".format(exe_date,exe_time)
 p = subprocess.Popen(cmd.split(" "))
 
 #サブプロセスを起動.
@@ -42,7 +42,7 @@ def index():
         exe_time = request.form.get("exe_time")
         #プロセスをキル、コマンドを再設定後、プロセスを再起動
         p.kill()
-        cmd = "python3 email_programs/main.py {} {}".format(exe_date,exe_time)
+        cmd = "python email_programs/main.py {} {}".format(exe_date,exe_time)
         p = subprocess.Popen(cmd.split(" "))
         print(os.getcwd())
 
