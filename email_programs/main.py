@@ -1,4 +1,4 @@
-ADDRESS_PATH = "email_programs\address\"
+ADDRESS_PATH = "email_programs/address/email_address.txt"
 
 import schedule
 import create_email
@@ -23,12 +23,14 @@ def convert_into_num(date):
 
     return res
 
-def task(days_later,address):
+def task(days_later):
 
     #まいくらすから出勤コーチと授業数をスクレイピング.days_later日後の出勤コーチとコマ数のdictを返す
     dict = get_schedule.getSchedule(days_later)
     #メールをテキストファイルに出6力
     create_email.Create_Mail(dict)
+    #登録済みコーチアドレス情報を取得
+    address = email_resister.read_file(ADDRESS_PATH)
     #出勤コーチリストを返す
     list = create_tolist.Create_ToList(dict,address)
     #メールを送信する
@@ -44,7 +46,7 @@ exe_time = args[2]
 
 
 #毎日0時に更新する
-schedule.every().day.at(exe_time).do(task,days_later=convert_into_num(exe_date),address=address_dict)
+schedule.every().day.at(exe_time).do(task,days_later=convert_into_num(exe_date))
 
 while True:
     schedule.run_pending()

@@ -5,10 +5,10 @@ from datetime import datetime
 import subprocess
 import os
 import time
-from address import email_resister
 from email_programs import *
+from email_programs.address import email_resister
 
-ADDRESS_FILE = "address/email_address.txt"
+ADDRESS_FILE = "email_programs/address/email_address.txt"
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///email.db'
