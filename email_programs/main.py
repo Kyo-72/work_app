@@ -11,7 +11,10 @@ import os
 import sys
 from address import email_resister
 
+
 args = sys.argv
+
+print("args{}".format(len(args)) )
 
 exe_date = args[1]
 exe_time = args[2]
@@ -19,6 +22,8 @@ my_usr = args[3]
 my_pass = args[4]
 gmail_address = args[5]
 gmail_pass = args[6]
+
+
 
 def convert_into_num(date):
     res = 0
@@ -34,6 +39,9 @@ def convert_into_num(date):
 
 def task(days_later):
 
+    print(gmail_address)
+    print(gmail_pass)
+
     #まいくらすから出勤コーチと授業数をスクレイピング.days_later日後の出勤コーチとコマ数のdictを返す
     dict = get_schedule.getSchedule(days_later)
     #メールをテキストファイルに出6力
@@ -41,6 +49,8 @@ def task(days_later):
     #登録済みコーチアドレス情報を取得
     address = email_resister.read_file(ADDRESS_PATH)
     #出勤コーチリストを返す
+    print(gmail_address)
+    print(gmail_pass)
     list = create_tolist.Create_ToList(dict,address,gmail_address,gmail_pass)
     #メールを送信する
     sendemail.send_email(list,days_later,gmail_address,gmail_pass)

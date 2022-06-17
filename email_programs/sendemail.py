@@ -22,7 +22,7 @@ def send_email(tolist,days_later,gmail_address,gmail_pass):
     smtp_obj.ehlo()
     smtp_obj.starttls()
     smtp_obj.login(gmail_address,gmail_pass)
-    smtp_obj.sendmail('seino0702@gmail.com',"seino0702@gmail.com",msg.as_string())
+    smtp_obj.sendmail(gmail_address,gmail_address,msg.as_string())
 
     print('メールを以下のメールアドレスに送信します')
     print(tolist)

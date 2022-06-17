@@ -25,7 +25,7 @@ def CreateErrorMail(flag,list):
 
 def SendError(gmail_address,gmail_pass):
 
-    admin_list = ['seino0702@gmail.com']
+    admin_list = [gmail_address]
 
     now = datetime.datetime.now()
 
@@ -36,12 +36,14 @@ def SendError(gmail_address,gmail_pass):
     msg = MIMEText(maintext_file.read(),'plain',charset)
     msg['Subject'] = Header(now.strftime('ERROR %m/%d(%a)').encode(charset),charset)
 
-
+    print(gmail_address)
+    print(gmail_pass)
+    
     smtp_obj = smtplib.SMTP('smtp.gmail.com',587)
     smtp_obj.ehlo()
     smtp_obj.starttls()
     smtp_obj.login(gmail_address,gmail_pass)
-    smtp_obj.sendmail('seino0702@gmail.com', admin_list,msg.as_string())
+    smtp_obj.sendmail(gmail_address, admin_list,msg.as_string())
 
     maintext_file.close()
     smtp_obj.quit()
