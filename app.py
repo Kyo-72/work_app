@@ -11,8 +11,6 @@ from email_programs.address import email_resister
 ADDRESS_FILE = "email_programs/address/email_address.txt"
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///email.db'
-db = SQLAlchemy(app)
 #初期値
 exe_date = "一日前"
 exe_time = "22:00"
