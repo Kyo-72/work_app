@@ -7,20 +7,40 @@ import os
 import time
 from email_programs import *
 from email_programs.address import email_resister
+my_usr = ""
+my_pass = ""
+gmail_address = ""
+gmail_pass = ""
 
 ADDRESS_FILE = "email_programs/address/email_address.txt"
 
+def set_pass():
+    #まいくらすのユーザーid/パスワード
+    print("まいくらすのユーザid :",end="")
+    my_usr = input()
+    print("まいくらすのpssword :",end="")
+    my_pass = input()
+    #gmailのadress/パスワード入力
+    print("gmailのaddress :",end="")
+    gmail_address = input()
+    print("gmailのpssword :",end="")
+    gmail_pass = input()
+
+#サブプロセスを起動.
+def inti_systems():
+    return 0
+
+#パスワードなどの諸設定
+set_pass();
 app = Flask(__name__)
 #初期値
 exe_date = "一日前"
 exe_time = "22:00"
 #プロセス初期化
-cmd = "python email_programs/main.py {} {}".format(exe_date,exe_time)
+cmd = "python email_programs/main.py {} {} {} {} {} {}".format(exe_date,exe_time,my_usr,my_pass,gmail_address,gmail_pass)
 p = subprocess.Popen(cmd.split(" "))
 
-#サブプロセスを起動.
-def inti_systems():
-    return 0
+
     
 
 @app.route('/',methods=["GET","POST"])

@@ -7,12 +7,7 @@ from email.header import Header
 def send_email(tolist,days_later):
     #出勤メールの日時を取得
     execute_date = datetime.datetime.now() + datetime.timedelta(days = days_later)
-    tolist.append('poletowin1028@docomo.ne.jp')
-    tolist.append('seino0702@gmail.com')
-    tolist.append('rei2000826@gmail.com')
-    tolist.append('hiro3mino3@yahoo.co.jp')
-    tolist.append('ariermal@icloud.com')
-    tolist.append('sunflower0719honobono@yahoo.co.jp')
+    
     
     charset = 'utf_8'
     

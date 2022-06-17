@@ -11,6 +11,15 @@ import os
 import sys
 from address import email_resister
 
+args = sys.argv
+
+exe_date = args[1]
+exe_time = args[2]
+my_usr = args[3]
+my_pass = args[4]
+gmail_address = args[5]
+gmail_pass = args[6]
+
 def convert_into_num(date):
     res = 0
 
@@ -38,10 +47,8 @@ def task(days_later):
 
 
 
-args = sys.argv
 
-exe_date = args[1]
-exe_time = args[2]
+
 
 
 
