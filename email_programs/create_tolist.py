@@ -4,7 +4,7 @@ import error_email
 
 #shelveファイルを参照してメールアドレスのリストを返す関数.未登録ならエラーメールを送信する
 
-def Create_ToList(d,address):
+def Create_ToList(d,address,gmail_address,gmail_pass):
 
     
     
@@ -27,7 +27,7 @@ def Create_ToList(d,address):
     #print(name_list)
     #print(no_name_list)
     if(len( no_name_list ) != 0):
-        error_email.ErrorMail(1,no_name_list)
+        error_email.ErrorMail(1,no_name_list,gmail_address,gmail_pass)
         
 
     return name_list

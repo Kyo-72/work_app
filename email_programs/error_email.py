@@ -23,16 +23,13 @@ def CreateErrorMail(flag,list):
 
     email_file.close()
 
-def SendError():
+def SendError(gmail_address,gmail_pass):
 
     admin_list = ['seino0702@gmail.com']
 
     now = datetime.datetime.now()
 
     charset = 'utf_8'
-
-    E_MAIL = 'nagitsujisystems@gmail.com'
-    PASSWORD = 'ywqjhdytbqoemomi'
 
     maintext_file = open('./error.txt','r')
 
@@ -43,16 +40,16 @@ def SendError():
     smtp_obj = smtplib.SMTP('smtp.gmail.com',587)
     smtp_obj.ehlo()
     smtp_obj.starttls()
-    smtp_obj.login(E_MAIL,PASSWORD)
+    smtp_obj.login(gmail_address,gmail_pass)
     smtp_obj.sendmail('seino0702@gmail.com', admin_list,msg.as_string())
 
     maintext_file.close()
     smtp_obj.quit()
 
 
-def ErrorMail(flag,list):
+def ErrorMail(flag,list,gmail_address,gmail_pass):
     #エラーのメールを作成
     CreateErrorMail(flag,list)
     #エラーメールを送信
-    SendError()
+    SendError(gmail_address,gmail_pass)
     

@@ -41,9 +41,9 @@ def task(days_later):
     #登録済みコーチアドレス情報を取得
     address = email_resister.read_file(ADDRESS_PATH)
     #出勤コーチリストを返す
-    list = create_tolist.Create_ToList(dict,address)
+    list = create_tolist.Create_ToList(dict,address,gmail_address,gmail_pass)
     #メールを送信する
-    sendemail.send_email(list,days_later)
+    sendemail.send_email(list,days_later,gmail_address,gmail_pass)
 
 
 
