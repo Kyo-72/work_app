@@ -8,8 +8,8 @@
     <h2>登録済みメールアドレス一覧</h2>
     <p>
         <select name="address_list" size="10">   
-            {%  for name,address in info_dict.items():　%}
-                <option value={{name}}>{{name + "\t:\t" + address}}</option>
+            {%  for email in emails: %}
+                <option value={{email.last_name}}>{{email.last_name + " " + email.first_name + "\t:\t" + email.email_address}}</option>
             {% endfor %}
                 
             

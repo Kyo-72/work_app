@@ -12,19 +12,35 @@ from email_programs.address import email_resister
 # gmail_address = ""
 # gmail_pass = ""
 
+app = Flask(__name__)
+
 ADDRESS_FILE = "email_programs/address/email_address.txt"
+#dbのURLを設定
+db_uri = "sqlite:///" + os.path.join(app.root_path, 'email.db') 
+app.config['SQLALCHEMY_DATABASE_URI'] = db_uri 
+db = SQLAlchemy(app) 
+
+#メールアドレス管理用DB
+class Email(db.Model): 
+    __tablename__ = "emails" 
+    id = db.Column(db.Integer, primary_key=True) # 識別子（特に使わない）
+    last_name = db.Column(db.String(), nullable=False) # 姓
+    first_name = db.Column(db.String(), nullable=False) # 名
+    email_address = db.Column(db.String(), nullable=False) # メールアドレス
+
+
 
 
 #まいくらすのユーザーid/パスワード
-print("まいくらすのユーザid :",end="")
-my_usr = input()
-print("まいくらすのpssword :",end="")
-my_pass = input()
+# print("まいくらすのユーザid :",end="")
+my_usr = "a"#input()
+# print("まいくらすのpssword :",end="")
+my_pass = "a"#input()
 #gmailのadress/パスワード入力
-print("gmailのaddress :",end="")
-gmail_address = input()
-print("gmailのpssword :",end="")
-gmail_pass = input()
+# print("gmailのaddress :",end="")
+gmail_address = "a"#input()
+# print("gmailのpssword :",end="")
+gmail_pass = "a"#input()
 
 #サブプロセスを起動.
 def inti_systems():
@@ -32,7 +48,7 @@ def inti_systems():
 
 print(gmail_address)
 print(gmail_pass)
-app = Flask(__name__)
+
 #初期値
 exe_date = "一日前"
 exe_time = "22:00"
@@ -69,52 +85,40 @@ def index():
 #メールアドレスを追加する
 @app.route("/add_email",methods=["GET","POST"])
 def add_email():
+   
     if request.method == "GET":
-        #現在のメールアドレスと名前の情報を取得(info[name] = addres)
-        info_dict = email_resister.read_file(ADDRESS_FILE)
-        return render_template("add_email.html",info_dict=info_dict)
-    else:
-        #フォームから名前とメールアドレスを取得、txtファイルに書き込む
-        last_name = str( request.form.get("last_name") )
-        first_name = str( request.form.get("first_name") )
+        #DBのすべてのクエリを取得
+        emails = Email.query.all()
+        return render_template("add_email.html",emails=emails)
+    elif request.method == "POST":
 
-        email = str( request.form.get("email") )
-        email_resister.add_info(ADDRESS_FILE,first_name,last_name,email)
+         #インスタンス作成
+        email = Email()
+
+        #フォームから名前とメールアドレスを取得、txtファイルに書き込む
+        email.last_name = str( request.form.get("last_name") )
+        email.first_name = str( request.form.get("first_name") )
+
+        email.email_address = str( request.form.get("email") )
+        db.session.add(email)
+        db.session.commit()
         return redirect("/add_email")
 
 #メールアドレスを削除する
 @app.route("/del_email",methods=["GET","POST"])
 def del_email():
     if request.method == "GET":
-        #現在のメールアドレスと名前の情報を取得(info[name] = addres)
-        info_dict = email_resister.read_file(ADDRESS_FILE)
-        return render_template("del_email.html",info_dict=info_dict)
+        #DBのすべてのクエリを取得
+        emails = Email.query.all()
+        return render_template("del_email.html",emails=emails)
     else:
-        #選択されたアドレスを削除する
-        address = request.form["address"] 
-        
-        email_resister.del_info(ADDRESS_FILE,address)
+        #選択されたクエリをDBから削除する
+        id = request.form["address"] 
+        db.session.query(Email).filter_by(id=id).delete()
+        db.session.commit()
         return redirect("/")
 
         
-"""
-@app.route('/create',methods=["GET","POST"])
-def create():
-    #リクエストがGETかPOSTかでふるまいを変える
-    if request.method == "POST":
-        #formからtitleとbodyを追加
-        title = request.form.get("title")
-        body = request.form.get("body")
 
-        #データベースをインスタンス化
-        post = Post(title=title,body=body)
-        #データベースを追加、コミット
-        db.session.add(post)
-        db.session.commit()
-
-        return redirect('/')
-    else:
-        return render_template("create.html")
-"""
 
 

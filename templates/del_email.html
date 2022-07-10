@@ -10,8 +10,8 @@
         
         <p>
             <select name="address" >   
-                {%  for name,address in info_dict.items():　%}
-                    <option value= {{address}}>{{name + "\t:\t" + address}}</option>
+                {%  for email in emails: %}
+                    <option value= {{email.id}}>{{email.last_name + " " + email.first_name + "\t:\t" + email.email_address}}</option>
                 {% endfor %}          
             </select>
         </p>     
