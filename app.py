@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 ADDRESS_FILE = "email_programs/address/email_address.txt"
 #dbのURLを設定
-db_uri = os.environ.get('DATABASE_URL') or "postgresql://localhost/email"
+db_uri = "postgresql://ucluwtkwtninbh:17c5b354b389b5dc03de208ee3b4e3e0037090e8626e2d7407f444ccb9c3bc8a@ec2-23-23-182-238.compute-1.amazonaws.com:5432/d94kl4sbb8v1ka" or "postgresql://localhost/email"
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri 
 db = SQLAlchemy(app) 
 
