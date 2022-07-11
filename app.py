@@ -32,15 +32,16 @@ class Email(db.Model):
 
 
 #まいくらすのユーザーid/パスワード
-# print("まいくらすのユーザid :",end="")
-my_usr = "a"#input()
-# print("まいくらすのpssword :",end="")
-my_pass = "a"#input()
+print("まいくらすのユーザid :",end="")
+my_usr = input()
+print("まいくらすのpssword :",end="")
+my_pass = input()
+
 #gmailのadress/パスワード入力
-# print("gmailのaddress :",end="")
-gmail_address = "a"#input()
-# print("gmailのpssword :",end="")
-gmail_pass = "a"#input()
+print("gmailのaddress :",end="")
+gmail_address = input()
+print("gmailのpssword :",end="")
+gmail_pass = input()
 
 #サブプロセスを起動.
 def inti_systems():
