@@ -20,6 +20,8 @@ def insert_blank(num):
 def Create_Mail(d):
     email_file = open('./email.txt','w')
     email_file.write('出勤コーチに連絡をしています\n\n')
+    email_file.write('\n\n☆今週から授業時間が変更されています．間違えないよう気を付けてください.')
+    email_file.write('\n\n1講目  12:15～13:35\n2講目  13:50～15:10\n3講目  15:25～16:45\n4講目  17:10～18:30\n5講目  18:45～20:05\n6講目  20:20～21:40\n\n')
 
     
     
@@ -50,7 +52,6 @@ def Create_Mail(d):
             
 
     email_file.write('\n\n＊このメールは現時点でのマイクラスの情報から自動的に作成、送信しています。')
-    email_file.write('\n\n1講目  12:20～13:40\n2講目  13:55～15:15\n3講目  15:30～16:50\n4講目  17:20～18:40\n5講目  18:55～20:15\n6講目  20:30～21:50\n\n')
     email_file.write('授業準備を万全にするため、余裕をもって出勤してください。')
     email_file.close()
 
