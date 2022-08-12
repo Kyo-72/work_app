@@ -3,3 +3,5 @@
 *.dat
 *.dir
 __pycache*
+email.txt
+*.pyc
