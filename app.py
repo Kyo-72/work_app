@@ -31,17 +31,17 @@ class Email(db.Model):
 
 
 
-#まいくらすのユーザーid/パスワード
-print("まいくらすのユーザid :",end="")
-my_usr = input()
-print("まいくらすのpssword :",end="")
-my_pass = input()
+# #まいくらすのユーザーid/パスワード
+# print("まいくらすのユーザid :",end="")
+my_usr = "a"
+# print("まいくらすのpssword :",end="")
+my_pass = "a"
 
-#gmailのadress/パスワード入力
-print("gmailのaddress :",end="")
-gmail_address = input()
-print("gmailのpssword :",end="")
-gmail_pass = input()
+# #gmailのadress/パスワード入力
+# print("gmailのaddress :",end="")
+gmail_address = "a"
+# print("gmailのpssword :",end="")
+gmail_pass = "a"
 
 #サブプロセスを起動.
 def inti_systems():
