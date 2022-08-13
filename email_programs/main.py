@@ -6,25 +6,11 @@ import create_tolist
 import sendemail
 import get_schedule
 import time
-import subprocess
-import os
 import sys
 from address import email_resister
 
 
-args = sys.argv
-
-print("args{}".format(len(args)) )
-
-exe_date = args[1]
-exe_time = args[2]
-my_usr = args[3]
-my_pass = args[4]
-gmail_address = args[5]
-gmail_pass = args[6]
-
-
-
+#TODO htmlからそのまま1,2,3,と受け取れるようにした方がいい
 def convert_into_num(date):
     res = 0
 
@@ -37,14 +23,14 @@ def convert_into_num(date):
 
     return res
 
-def task(days_later):
+def execute_email_jobs(days_later):
 
-    print(gmail_address)
-    print(gmail_pass)
+    gmail_address = "GMAIL_ADRESS"
+    gmail_pass = "ADMIN_GMAIL_ADRESS"
 
     #まいくらすから出勤コーチと授業数をスクレイピング.days_later日後の出勤コーチとコマ数のdictを返す
     dict = get_schedule.getSchedule(days_later)
-    #メールをテキストファイルに出6力
+    #メールをテキストファイルに出力
     create_email.Create_Mail(dict)
     #登録済みコーチアドレス情報を取得
     address = email_resister.read_file(ADDRESS_PATH)
@@ -61,12 +47,5 @@ def task(days_later):
 
 
 
-
-#毎日0時に更新する
-schedule.every().day.at(exe_time).do(task,days_later=convert_into_num(exe_date))
-
-while True:
-    schedule.run_pending()
-    time.sleep(1)
     
 

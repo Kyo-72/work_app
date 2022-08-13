@@ -1,5 +1,5 @@
 import error_email
-
+from flask_sqlalchemy import SQLAlchemy
 
 
 #shelveファイルを参照してメールアドレスのリストを返す関数.未登録ならエラーメールを送信する
@@ -12,6 +12,9 @@ def Create_ToList(d,address,gmail_address,gmail_pass):
     name_list = []
     #メールアドレス未登録者リスト
     no_name_list = []
+
+    #データベース
+    
     
 
     for name in d:

@@ -4,6 +4,7 @@ import convert
 
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
+import os
 import chromedriver_binary
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
@@ -40,14 +41,18 @@ def getSchedule(days_later):
     #urlのサイトに飛ぶ
     url = 'https://koushi.edu-beit.net/seiki/edubeit/schedule/index' 
     browser.get(url)
+
+    #ID・パスワード
+    myclass_id = os.getenv("MYCLASS_ID")
+    myclass_password = os.getenv("MYCLASS_PASSWORD")
     
 
     #ログイン処理
     elem_username = browser.find_element_by_id('loginId')
-    elem_username.send_keys('fc602132')
+    elem_username.send_keys(myclass_id)
 
     elem_password = browser.find_element_by_id('password')
-    elem_password.send_keys('fc602132')
+    elem_password.send_keys(myclass_password)
 
     elem_loginbtn = browser.find_element_by_tag_name('button')
     elem_loginbtn.click()

@@ -1,64 +1,48 @@
-void TAtest1-1()
-{
-    struct graph *g = create_graph();
-
-    struct vertex *v0 = add_vertex(g, '0');
-    struct vertex *v1 = add_vertex(g, '1');
-    struct vertex *v2 = add_vertex(g, '2');
-    struct vertex *v3 = add_vertex(g, '3');
-    struct vertex *v4 = add_vertex(g, '4');
-    struct vertex *v5 = add_vertex(g, '5');
-
-    add_edge(g, v0, v1);
-    add_edge(g, v0, v2);
-    add_edge(g, v2, v3);
-    add_edge(g, v3, v2);
-    add_edge(g, v3, v4);
-    add_edge(g, v4, v2);
-    add_edge(g, v4, v5);
-    add_edge(g, v5, v5);
-
-    print_matrix(g);
-    print_list(g);
-
-    check_consistency(g);
-
-    printf("Success: %s\n", __func__);
-}
-
-
-void TAtest1-2()
-{
-    struct graph *g = create_graph();
-
-    struct vertex *v0 = add_vertex(g, '0');
-    struct vertex *v1 = add_vertex(g, '1');
-    struct vertex *v2 = add_vertex(g, '2');
-    struct vertex *v3 = add_vertex(g, '3');
-    struct vertex *v4 = add_vertex(g, '4');
-    struct vertex *v5 = add_vertex(g, '5');
-
-    add_edge(g, v0, v0);
-    add_edge(g, v0, v1);
-    add_edge(g, v0, v2);
-    add_edge(g, v0, v3);
-    add_edge(g, v0, v4);
-    add_edge(g, v0, v5);
-    add_edge(g, v1, v2);
-    add_edge(g, v2, v1);
-    add_edge(g, v2, v2);
-    add_edge(g, v3, v3);
-    add_edge(g, v3, v1);
-    add_edge(g, v4, v1);
-    add_edge(g, v4, v3);
-    add_edge(g, v4, v5);
-    add_edge(g, v5, v3);
-    add_edge(g, v5, v4);
-
-    print_matrix(g);
-    print_list(g);
-
-    check_consistency(g);
-
-    printf("Success: %s\n", __func__);
-}
+table{
+    width: 15%;
+    border-collapse:separate;
+    border-spacing: 0;
+  }
+  
+  table th:first-child{
+    border-radius: 5px 0 0 0;
+  }
+  
+  table th:last-child{
+    border-radius: 0 5px 0 0;
+    border-right: 1px solid #3c6690;
+  }
+  
+  table th{
+    text-align: center;
+    color:rgb(205, 22, 22);
+    background: linear-gradient(#829ebc,#225588);
+    border-left: 1px solid #3c6690;
+    border-top: 1px solid #3c6690;
+    border-bottom: 1px solid #3c6690;
+    box-shadow: 0px 1px 1px rgba(255,255,255,0.3) inset;
+    width: 25%;
+    padding: 10px 0;
+  }
+  
+  table td{
+    text-align: center;
+    border-left: 1px solid #a8b7c5;
+    border-bottom: 1px solid #a8b7c5;
+    border-top:none;
+    box-shadow: 0px -3px 5px 1px #eee inset;
+    width: 25%;
+    padding: 10px 0;
+  }
+  
+  table td:last-child{
+    border-right: 1px solid #a8b7c5;
+  }
+  
+  table tr:last-child td:first-child {
+    border-radius: 0 0 0 5px;
+  }
+  
+  table tr:last-child td:last-child {
+    border-radius: 0 0 5px 0;
+  }

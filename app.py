@@ -1,20 +1,23 @@
 from flask import Flask
+from apscheduler.schedulers.background import BackgroundScheduler
 from flask import render_template,request,redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import subprocess
 import os
+import schedule
 import time
-from email_programs import *
-from email_programs.address import email_resister
-# my_usr = ""
-# my_pass = ""
-# gmail_address = ""
-# gmail_pass = ""
+
+
+#初期設定時間
+exe_date = "一日前"
+exe_hour = 4
+exe_min = 50
+
+
+#DB
 
 app = Flask(__name__)
-
-ADDRESS_FILE = "email_programs/address/email_address.txt"
 #dbのURLを設定
 db_uri = "postgresql://ucluwtkwtninbh:17c5b354b389b5dc03de208ee3b4e3e0037090e8626e2d7407f444ccb9c3bc8a@ec2-23-23-182-238.compute-1.amazonaws.com:5432/d94kl4sbb8v1ka" or "postgresql://localhost/email"
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri 
@@ -29,57 +32,71 @@ class Email(db.Model):
     email_address = db.Column(db.String(), nullable=False) # メールアドレス
 
 
+#dbからメールアドレスを取る
+email_data = Email.query.all()
+
+def task():
+    
+    #main.pyをたたく
+    print("タスクが実行されたよ")
+    # main.execute_email_jobs()
+
+def schedule_init():
+    #スケジューラをインスタンス化
+    sched = BackgroundScheduler(daemon=True)
+    #定期実行の時間設定
+    sched.add_job(
+        task, 'cron', hour=exe_hour, minute=exe_min
+    )
+    #スケジューラ スタート
+    sched.start()
+
+    return sched
+
+#スケジューラを初期化
+sched = schedule_init()
 
 
-# #まいくらすのユーザーid/パスワード
-# print("まいくらすのユーザid :",end="")
-my_usr = "a"
-# print("まいくらすのpssword :",end="")
-my_pass = "a"
 
-# #gmailのadress/パスワード入力
-# print("gmailのaddress :",end="")
-gmail_address = "a"
-# print("gmailのpssword :",end="")
-gmail_pass = "a"
+
+
+
+
+
+
 
 #サブプロセスを起動.
 def inti_systems():
     return 0
-
-print(gmail_address)
-print(gmail_pass)
-
-#初期値
-exe_date = "一日前"
-exe_time = "22:00"
-#プロセス初期化
-cmd = "python email_programs/main.py {} {} {} {} {} {}".format(exe_date,exe_time,my_usr,my_pass,gmail_address,gmail_pass)
-p = subprocess.Popen(cmd.split(" "))
-
-
     
-
 @app.route('/',methods=["GET","POST"])
 def index():
     #index.html
     global exe_date
-    global exe_time
-    global p
+    global exe_hour
+    global exe_min
+    global sched
 
     #GEtなら現在の設定日時を表示する
     if request.method == "GET":
-        return render_template("index.html",exe_date=exe_date,exe_time=exe_time)
+        return render_template("index.html",exe_date=exe_date,exe_hour=exe_hour,exe_min=exe_min )
         
-    #POSTなら、設定時刻を更新してプロセスを再起動する
+    #POSTなら、設定時刻を更新してスケジューラをシャットダウン，タスクを追加後，起動
     else:
+        
         exe_date = request.form.get("exe_day")
+        #hh:mm形式で時間を取得
         exe_time = request.form.get("exe_time")
-        #プロセスをキル、コマンドを再設定後、プロセスを再起動
-        p.kill()
-        cmd = "python email_programs/main.py {} {} {} {} {} {}".format(exe_date,exe_time,my_usr,my_pass,gmail_address,gmail_pass)
-        p = subprocess.Popen(cmd.split(" "))
-        print(os.getcwd())
+        #TODO　正しくスプリットできなかった際のエラー処理を書くべき
+        time = exe_time.split(":")
+        exe_hour = int( time[0] )
+        exe_min = int( time[1] )
+        #現在稼働しているタスクを強制終了
+        sched.shutdown(wait=False)
+        #タスクを再設定
+        sched = schedule_init()
+
+
 
         return redirect("/")
         
@@ -118,6 +135,7 @@ def del_email():
         db.session.query(Email).filter_by(id=id).delete()
         db.session.commit()
         return redirect("/")
+
 
         
 
