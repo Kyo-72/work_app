@@ -3,14 +3,11 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from flask import render_template,request,redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-import subprocess
-import os
-import schedule
-import time
+from email_programs import main
 
 
 #初期設定時間
-exe_date = "一日前"
+exe_date = 1
 exe_hour = 4
 exe_min = 50
 
@@ -32,14 +29,22 @@ class Email(db.Model):
     email_address = db.Column(db.String(), nullable=False) # メールアドレス
 
 
-#dbからメールアドレスを取る
-email_data = Email.query.all()
 
+
+ #main.pyをたたく
 def task():
     
-    #main.pyをたたく
-    print("タスクが実行されたよ")
-    # main.execute_email_jobs()
+    #dbからメールアドレスを取る
+    email_address = Email.query.all()
+    email_dicts = {}
+    for email in email_address:
+        name = email.last_name + " " + email.first_name
+        email_dicts[name] = email.email_address
+        
+    print(email_dicts)
+
+    main.execute_email_jobs(exe_date,email_dicts)
+    print("タスク実行されたな")
 
 def schedule_init():
     #スケジューラをインスタンス化
@@ -55,15 +60,6 @@ def schedule_init():
 
 #スケジューラを初期化
 sched = schedule_init()
-
-
-
-
-
-
-
-
-
 
 #サブプロセスを起動.
 def inti_systems():
@@ -84,9 +80,9 @@ def index():
     #POSTなら、設定時刻を更新してスケジューラをシャットダウン，タスクを追加後，起動
     else:
         
-        exe_date = request.form.get("exe_day")
+        exe_date = int ( request.form.get("exe_day") )
         #hh:mm形式で時間を取得
-        exe_time = request.form.get("exe_time")
+        exe_time =  request.form.get("exe_time") 
         #TODO　正しくスプリットできなかった際のエラー処理を書くべき
         time = exe_time.split(":")
         exe_hour = int( time[0] )

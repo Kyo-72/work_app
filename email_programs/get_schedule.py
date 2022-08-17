@@ -1,6 +1,6 @@
 #! python3
 
-import convert
+from email_programs import convert
 
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
@@ -9,7 +9,6 @@ import chromedriver_binary
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from time import sleep
-import requests
 import re
 from bs4 import BeautifulSoup
 

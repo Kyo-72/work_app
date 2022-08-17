@@ -6,3 +6,4 @@ __pycache*
 *email.txt
 *emails
 *.pyc
+*error.txt
