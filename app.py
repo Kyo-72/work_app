@@ -116,6 +116,7 @@ def add_email():
         email.email_address = str( request.form.get("email") )
         db.session.add(email)
         db.session.commit()
+        db.session.close()
         return redirect("/add_email")
 
 #メールアドレスを削除する
@@ -130,7 +131,8 @@ def del_email():
         id = request.form["address"] 
         db.session.query(Email).filter_by(id=id).delete()
         db.session.commit()
-        return redirect("/")
+        db.session.close()
+        return redirect("/del_email")
 
 
         

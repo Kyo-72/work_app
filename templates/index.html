@@ -1,49 +1,58 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <link rel="stylesheet" href="static/css/index.css">  
 
-    <h1>
-        出勤メールプログラム
-    </h1>
+<section class="wrapper">
+    <div class="container">
+        <div class="content">
+            <h2 class="date">
+                {% if exe_date == 0: %}
+            <p>当日</p>
+            {%elif exe_date == 1:%}
+            <p>前日</p>
+            {%elif exe_date == 2:%}
+            <p>2日前</p>
+            {%elif exe_date == 3:%}
+            <p>3日前</p>
+            {% else:%}
+            
+            {% endif %}
 
-    <table>
-        <tr>
-            <th>
-                <p>現在の設定日時</p>
-            </th>
-        </tr>
-        <tr>
-            <td> <p>{{exe_date}}</p></td>
-        </tr>
-        <tr>
-            <td><p>{{exe_hour}}</p></td>
-        </tr>
-        <tr>
-            <td><p>{{exe_min}}</p></td>
-        </tr>
-    </table>
+            </h2>
+            <h2 class="time">
+                {%if exe_min < 10 :%}
+                {{exe_hour}}:0{{exe_min}}
+                {% else: %}
+                {{exe_hour}}:{{exe_min}}
+                {% endif %}
+            </h2>
+        </div>
+    </div>
+</section>
+
     
-   
     
-
-    <p><a href="/add_email"role="button">メールアドレス追加</a></p>
-    <p><a href="/del_email"role="button">メールアドレス削除</a></p>
     
-
-
     <form method="post">
 
-        <p>
+    <p>
+        <label for="exe_date">メール送信日付 : </label>
         <select name="exe_day">
         <option value=0>当日</option>
         <option value=1>前日</option>
         <option value=2>二日前</option>
         <option value=3>三日前</option>
         </select>
-        </p>
+    </p>
 
-        <input type="time" name="exe_time" value={{exe_time}}>
+        <p>
+            <label for="exe_time">メール送信時間 : </label>
+            <input id="exe_time" type="time" name="exe_time"
+                   required
+                   pattern="[0-9]{2}:[0-9]{2}">
+            <span class="validity"></span>
+        </p>
+        
         
         <p><input type="submit" value="送信する"></p>
         
