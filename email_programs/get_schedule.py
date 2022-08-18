@@ -1,22 +1,22 @@
 #! python3
 
-from email_programs import convert
+import convert
 
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
-import os
 import chromedriver_binary
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from time import sleep
+import requests
 import re
 from bs4 import BeautifulSoup
 
 # chromedriverの設定
 options = Options()
 options.add_argument('--headless')
-#options.add_argument('--no-sandbox')
-#options.add_argument('--disable-dev-shm-usage')
+options.add_argument('--no-sandbox')
+options.add_argument('--disable-dev-shm-usage')
 
 
 
@@ -34,24 +34,20 @@ def getSchedule(days_later):
 
     # ブラウザを開く。webドライバのpathを指定
     #browser = webdriver.Chrome(executable_path='chromedriver.exe', options=options)
-    browser = webdriver.Chrome(ChromeDriverManager().install(),options=options)
+    browser = webdriver.Chrome(executable_path=ChromeDriverManager().install(),options=options)
 
 
     #urlのサイトに飛ぶ
     url = 'https://koushi.edu-beit.net/seiki/edubeit/schedule/index' 
     browser.get(url)
-
-    #ID・パスワード
-    myclass_id = os.getenv("MYCLASS_ID")
-    myclass_password = os.getenv("MYCLASS_PASSWORD")
     
 
     #ログイン処理
     elem_username = browser.find_element_by_id('loginId')
-    elem_username.send_keys(myclass_id)
+    elem_username.send_keys('fc602132')
 
     elem_password = browser.find_element_by_id('password')
-    elem_password.send_keys(myclass_password)
+    elem_password.send_keys('fc602132')
 
     elem_loginbtn = browser.find_element_by_tag_name('button')
     elem_loginbtn.click()
