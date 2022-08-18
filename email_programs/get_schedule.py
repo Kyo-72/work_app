@@ -1,6 +1,6 @@
 #! python3
 
-import convert
+from email_programs import convert
 
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
