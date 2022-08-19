@@ -6,12 +6,6 @@ from datetime import datetime
 from email_programs import main
 
 
-#初期設定時間
-exe_date = 1
-exe_hour = 4
-exe_min = 50
-
-
 #DB
 
 app = Flask(__name__)
@@ -28,8 +22,22 @@ class Email(db.Model):
     first_name = db.Column(db.String(), nullable=False) # 名
     email_address = db.Column(db.String(), nullable=False) # メールアドレス
 
+class Config(db.Model): 
+    __tablename__ = "configs" 
+    id = db.Column(db.Integer, primary_key=True) # 識別子（特に使わない）
+    exe_date = db.Column(db.Integer(), nullable=False) # メール送信日 0:当日，1:前日，2:2二日前
+    exe_hour = db.Column(db.Integer(), nullable=False) # メール送信時間（時間）
+    exe_min = db.Column(db.Integer(), nullable=False) # メール送信時間（分）
+    
+#設定情報をdbから持ってくる
+config = db.session.query(Config).filter_by(id=2).first()
+exe_date = config.exe_date
+exe_hour = config.exe_hour
+exe_min = config.exe_min
 
-
+# exe_date = 1
+# exe_hour = 22
+# exe_min = 0
 
  #main.pyをたたく
 def task():
@@ -68,19 +76,26 @@ def inti_systems():
 @app.route('/',methods=["GET","POST"])
 def index():
     #index.html
+    global sched
     global exe_date
     global exe_hour
     global exe_min
-    global sched
 
     #GEtなら現在の設定日時を表示する
     if request.method == "GET":
+        config = db.session.query(Config).filter_by(id=2).first()
+        exe_date = config.exe_date
+        exe_hour = config.exe_hour
+        exe_min = config.exe_min
+
         return render_template("index.html",exe_date=exe_date,exe_hour=exe_hour,exe_min=exe_min )
         
     #POSTなら、設定時刻を更新してスケジューラをシャットダウン，タスクを追加後，起動
     else:
+
+        config = db.session.query(Config).filter_by(id=2).first()
         
-        exe_date = int ( request.form.get("exe_day") )
+        exe_date = int ( request.form.get("exe_date") )
         #hh:mm形式で時間を取得
         exe_time =  request.form.get("exe_time") 
         #TODO　正しくスプリットできなかった際のエラー処理を書くべき
@@ -91,6 +106,14 @@ def index():
         sched.shutdown(wait=False)
         #タスクを再設定
         sched = schedule_init()
+
+        config.exe_hour = exe_hour
+        config.exe_min = exe_min
+        config.exe_date = exe_date
+
+        db.session.commit()
+        db.session.close()
+        
 
 
 
