@@ -5,6 +5,7 @@ from email_programs import create_tolist
 from email_programs import sendemail
 from email_programs import get_schedule
 import os
+import json
 
 # from address import email_resister
 
@@ -13,6 +14,8 @@ def execute_email_jobs(days_later,email_address):
 
     gmail_address = os.getenv("ADMIN_GMAIL_ADDRESS")
     gmail_pass = os.getenv("ADMIN_GMAIL_KEY")
+    admin_emails_json = os.getenv("ADMIN_EMAILS_JSON")
+    admin_emails = json.loads(admin_emails_json)
 
     myclass_id = os.getenv("MYCLASS_ID")
     myclass_password = os.getenv("MYCLASS_PASSWORD")
@@ -21,9 +24,9 @@ def execute_email_jobs(days_later,email_address):
     dict = get_schedule.getSchedule(days_later,myclass_id,myclass_password)
     #メールをテキストファイルに出力
     create_email.Create_Mail(dict)
-    list = create_tolist.Create_ToList(dict,email_address,gmail_address,gmail_pass)
+    list = create_tolist.Create_ToList(dict,email_address,gmail_address,gmail_pass,admin_emails)
     #メールを送信する
-    sendemail.send_email(list,days_later,gmail_address,gmail_pass)
+    sendemail.send_email(list,days_later,gmail_address,gmail_pass,admin_emails)
 
 
 

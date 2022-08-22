@@ -4,10 +4,11 @@ import datetime
 from email.mime.text import MIMEText
 from email.header import Header
 
-def send_email(tolist,days_later,gmail_address,gmail_pass):
+def send_email(tolist,days_later,gmail_address,gmail_pass,admin_emails):
     #出勤メールの日時を取得
     execute_date = datetime.datetime.now() + datetime.timedelta(days = days_later)
-    
+    #送信先emailリスト(出勤コーチ+管理者)
+    tolist += admin_emails
     
     charset = 'utf_8'
     
@@ -22,7 +23,7 @@ def send_email(tolist,days_later,gmail_address,gmail_pass):
     smtp_obj.ehlo()
     smtp_obj.starttls()
     smtp_obj.login(gmail_address,gmail_pass)
-    smtp_obj.sendmail(gmail_address,gmail_address,msg.as_string())
+    smtp_obj.sendmail(gmail_address,admin_emails,msg.as_string())
 
     print('メールを以下のメールアドレスに送信します')
     print(tolist)

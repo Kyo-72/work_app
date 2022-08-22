@@ -83,9 +83,6 @@ def getSchedule(days_later,myclass_id,myclass_password):
             
             #空白を処理する
             lessons_schedule = [l for l in lessons_schedule if l != "\n"]
-            
-            
-
     
             lesson_mo = lesson_time_regex.findall(lessons_schedule[days_later].text)
             if( len(lesson_mo) ):

@@ -35,9 +35,6 @@ exe_date = config.exe_date
 exe_hour = config.exe_hour
 exe_min = config.exe_min
 
-# exe_date = 1
-# exe_hour = 22
-# exe_min = 0
 
  #main.pyをたたく
 def task():

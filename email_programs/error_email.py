@@ -23,9 +23,8 @@ def CreateErrorMail(flag,list):
 
     email_file.close()
 
-def SendError(gmail_address,gmail_pass):
+def SendError(gmail_address,gmail_pass,admin_emails):
 
-    admin_list = [gmail_address]
 
     now = datetime.datetime.now()
 
@@ -43,15 +42,15 @@ def SendError(gmail_address,gmail_pass):
     smtp_obj.ehlo()
     smtp_obj.starttls()
     smtp_obj.login(gmail_address,gmail_pass)
-    smtp_obj.sendmail(gmail_address, admin_list,msg.as_string())
+    smtp_obj.sendmail(gmail_address, admin_emails,msg.as_string())
 
     maintext_file.close()
     smtp_obj.quit()
 
 
-def ErrorMail(flag,list,gmail_address,gmail_pass):
+def ErrorMail(flag,list,gmail_address,gmail_pass,admin_emails):
     #エラーのメールを作成
     CreateErrorMail(flag,list)
     #エラーメールを送信
-    SendError(gmail_address,gmail_pass)
+    SendError(gmail_address,gmail_pass,admin_emails)
     
