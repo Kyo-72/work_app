@@ -22,7 +22,7 @@ options.add_argument('--disable-dev-shm-usage')
 
 
 
-def getSchedule(days_later):
+def getSchedule(days_later,myclass_id,myclass_password):
 
 
 
@@ -44,10 +44,10 @@ def getSchedule(days_later):
 
     #ログイン処理
     elem_username = browser.find_element_by_id('loginId')
-    elem_username.send_keys('fc602132')
+    elem_username.send_keys(myclass_id)
 
     elem_password = browser.find_element_by_id('password')
-    elem_password.send_keys('fc602132')
+    elem_password.send_keys(myclass_password)
 
     elem_loginbtn = browser.find_element_by_tag_name('button')
     elem_loginbtn.click()
