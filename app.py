@@ -45,7 +45,6 @@ def task():
     for email in email_address:
         name = email.last_name + " " + email.first_name
         email_dicts[name] = email.email_address
-        
     print(email_dicts)
 
     main.execute_email_jobs(exe_date,email_dicts)

@@ -17,7 +17,7 @@ def CreateErrorMail(flag,list):
         
             email_file.write(name + '\n')
 
-
+        email_file.write('\n\n以下のサイトからメールアドレスの登録を行ってください\nhttps://goalfree72.herokuapp.com/add_email')
         email_file.write('\n\n※このメールはプログラムから自動で送信されています')
             
 
