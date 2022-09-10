@@ -9,9 +9,9 @@ def send_email(tolist,days_later,gmail_address,gmail_pass,admin_emails):
     #出勤メールの日時を取得
     execute_date = datetime.datetime.now() + datetime.timedelta(days = days_later)
     sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
-    
+    list = ["seino0702@gmail.com"]
     from_email = Email(gmail_address)
-    to_email = [ To(email) for email in tolist]
+    to_email = [ To(email) for email in list]
     subject = execute_date.strftime('%m/%d(%a)')
     content = Content("text/html",Path('./email.txt').read_text())
     mail = Mail(from_email, to_email, subject, content)
