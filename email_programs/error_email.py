@@ -43,7 +43,7 @@ def SendError(gmail_address,gmail_pass,admin_emails):
     smtp_obj.ehlo()
     smtp_obj.starttls()
     smtp_obj.login(gmail_address,gmail_pass)
-    smtp_obj.sendmail(gmail_address, gmail_address,msg.as_string())
+    smtp_obj.sendmail(gmail_address, admin_emails,msg.as_string())
 
     maintext_file.close()
     smtp_obj.quit()
