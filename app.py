@@ -153,8 +153,10 @@ def del_email():
         db.session.close()
         return redirect("/del_email")
 
-
-        
+#SendGrid　webhookからポストを受け取る
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    return '', 200, {}
 
 
 

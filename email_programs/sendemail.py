@@ -1,4 +1,3 @@
-import smtplib
 import datetime
 #日本語メールのためのemailパッケージ
 from email.mime.text import MIMEText
@@ -7,26 +6,19 @@ from email.header import Header
 def send_email(tolist,days_later,gmail_address,gmail_pass,admin_emails):
     #出勤メールの日時を取得
     execute_date = datetime.datetime.now() + datetime.timedelta(days = days_later)
-    #送信先emailリスト(出勤コーチ+管理者)
-    tolist += admin_emails
+    sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
+    list = ["seino0702@gmail.com","is0462fx@ed.ritsumei.ac.jp"]
     
-    charset = 'utf_8'
-    
-
-    maintext_file = open('./email.txt','r')
-
-    msg = MIMEText(maintext_file.read(),'plain',charset)
-    msg['Subject'] = Header(execute_date.strftime('%m/%d(%a)').encode(charset),charset)
-
-
-    smtp_obj = smtplib.SMTP('smtp.gmail.com',587)
-    smtp_obj.ehlo()
-    smtp_obj.starttls()
-    smtp_obj.login(gmail_address,gmail_pass)
-    smtp_obj.sendmail(gmail_address,tolist,msg.as_string())
+    from_email = Email(gmail_address)
+    to_email = [ To(email) for email in list]
+    subject = execute_date.strftime('%m/%d(%a)')
+    content = Content("text/html",Path('./email.txt').read_text())
+    mail = Mail(from_email, to_email, subject, content)
+    response = sg.client.mail.send.post(request_body=mail.get())
+    print(response.status_code)
+    print(response.body)
+    print(response.headers)
 
     print('メールを以下のメールアドレスに送信します')
     print(tolist)
-    maintext_file.close()
-    smtp_obj.quit()
-
+   
