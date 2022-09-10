@@ -18,7 +18,8 @@ def CreateErrorMail(flag,list):
             email_file.write(name + '\n')
 
         email_file.write('\n\n以下のサイトからメールアドレスの登録を行ってください\nhttps://goalfree72.herokuapp.com/add_email')
-        email_file.write('\n\n※このメールはプログラムから自動で送信されています')
+        email_file.write('\n\n※登録されているのに送信できていない場合は名前が間違えている可能性が高いです（空白が入ってる，漢字が間違えてるなど）')
+        email_file.write('\n※このメールはプログラムから自動で送信されています')
             
 
     email_file.close()
@@ -42,7 +43,7 @@ def SendError(gmail_address,gmail_pass,admin_emails):
     smtp_obj.ehlo()
     smtp_obj.starttls()
     smtp_obj.login(gmail_address,gmail_pass)
-    smtp_obj.sendmail(gmail_address, admin_emails,msg.as_string())
+    smtp_obj.sendmail(gmail_address, gmail_address,msg.as_string())
 
     maintext_file.close()
     smtp_obj.quit()

@@ -1,7 +1,9 @@
 import datetime
 #日本語メールのためのemailパッケージ
-from email.mime.text import MIMEText
-from email.header import Header
+import sendgrid
+import os
+from sendgrid.helpers.mail import *
+from pathlib import Path
 
 def send_email(tolist,days_later,gmail_address,gmail_pass,admin_emails):
     #出勤メールの日時を取得
