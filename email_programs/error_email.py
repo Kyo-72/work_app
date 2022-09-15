@@ -24,17 +24,17 @@ def CreateErrorMail(flag,list):
 
     email_file.close()
 
-def SendError(gmail_address,gmail_pass,admin_emails):
+def SendError(gmail_address,gmail_pass,admin_emails,days_later):
 
 
-    now = datetime.datetime.now()
+    execute_date = datetime.datetime.now() + datetime.timedelta(days = days_later)
 
     charset = 'utf_8'
 
     maintext_file = open('./error.txt','r')
 
-    msg = MIMEText(maintext_file.read(),'plain',charset)
-    msg['Subject'] = Header(now.strftime('ERROR %m/%d(%a)').encode(charset),charset)
+    msg = MIMEText(maintext_file.read(),'html',charset)
+    msg['Subject'] = Header(execute_date.strftime('ERROR %m/%d(%a)').encode(charset),charset)
 
     print(gmail_address)
     print(gmail_pass)
@@ -43,15 +43,15 @@ def SendError(gmail_address,gmail_pass,admin_emails):
     smtp_obj.ehlo()
     smtp_obj.starttls()
     smtp_obj.login(gmail_address,gmail_pass)
-    smtp_obj.sendmail(gmail_address, admin_emails,msg.as_string())
+    smtp_obj.sendmail(gmail_address,admin_emails,msg.as_string())
 
     maintext_file.close()
     smtp_obj.quit()
 
 
-def ErrorMail(flag,list,gmail_address,gmail_pass,admin_emails):
+def ErrorMail(flag,list,gmail_address,gmail_pass,admin_emails,days_later):
     #エラーのメールを作成
     CreateErrorMail(flag,list)
     #エラーメールを送信
-    SendError(gmail_address,gmail_pass,admin_emails)
+    SendError(gmail_address,gmail_pass,admin_emails,days_later)
     

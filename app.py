@@ -48,7 +48,7 @@ def task():
     print(email_dicts)
 
     main.execute_email_jobs(exe_date,email_dicts)
-    print("タスク実行されたな")
+
 
 def schedule_init():
     #スケジューラをインスタンス化
@@ -65,9 +65,6 @@ def schedule_init():
 #スケジューラを初期化
 sched = schedule_init()
 
-#サブプロセスを起動.
-def inti_systems():
-    return 0
     
 @app.route('/',methods=["GET","POST"])
 def index():
