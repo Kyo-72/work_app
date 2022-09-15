@@ -6,6 +6,8 @@ from sendgrid.helpers.mail import *
 from pathlib import Path
 
 def send_email(tolist,days_later,gmail_address,gmail_pass,admin_emails):
+    #admin_emailsに含まれるメールアドレスには毎日メールを送信する
+    tolist += admin_emails
     #出勤メールの日時を取得
     execute_date = datetime.datetime.now() + datetime.timedelta(days = days_later)
     sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))

@@ -24,9 +24,10 @@ def execute_email_jobs(days_later,email_address):
     dict = get_schedule.getSchedule(days_later,myclass_id,myclass_password)
     #メールをテキストファイルに出力
     create_email.Create_Mail(dict)
-    list = create_tolist.Create_ToList(dict,email_address,gmail_address,gmail_pass,admin_emails)
+    list = create_tolist.Create_ToList(dict,email_address,gmail_address,gmail_pass,admin_emails,days_later)
     #メールを送信する
     sendemail.send_email(list,days_later,gmail_address,gmail_pass,admin_emails)
+
 
 
 
