@@ -26,7 +26,9 @@ def execute_email_jobs(days_later,email_address):
     create_email.Create_Mail(dict)
     list = create_tolist.Create_ToList(dict,email_address,gmail_address,gmail_pass,admin_emails,days_later)
     #メールを送信する
-    sendemail.send_email(list,days_later,gmail_address,gmail_pass,admin_emails)
+    x_id = sendemail.send_email(list,days_later,gmail_address,gmail_pass,admin_emails)
+    #メール送信リクエスト毎のx_id
+    return x_id
 
 
 

@@ -47,7 +47,9 @@ def task():
         email_dicts[name] = email.email_address
     print(email_dicts)
 
-    main.execute_email_jobs(exe_date,email_dicts)
+    x_id = main.execute_email_jobs(exe_date,email_dicts)
+    print("次はここを見るねん")
+    print(x_id)
 
 
 def schedule_init():

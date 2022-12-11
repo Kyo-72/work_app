@@ -22,8 +22,6 @@ def send_email(tolist,days_later,gmail_address,gmail_pass,admin_emails):
     print(response.body)
     print(response.headers)
 
-    print("ここ見るねん")
-    print(response.headers["X-Message-Id"])
-    print('メールを以下のメールアドレスに送信します')
-    print(tolist)
+    #SendGridリクエストごとのX-idを返す
+    return response.headers["X-Message-Id"]
    
