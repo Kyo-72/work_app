@@ -153,6 +153,8 @@ def del_email():
 #SendGrid　webhookからポストを受け取る
 @app.route('/webhook', methods=['POST'])
 def webhook():
+    data_list = request.get_json()
+    print(data_list)
     return '', 200, {}
 
 
