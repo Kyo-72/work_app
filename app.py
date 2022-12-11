@@ -36,7 +36,7 @@ exe_hour = config.exe_hour
 exe_min = config.exe_min
 
 
- #main.pyをたたく
+#main.pyをたたく
 def task():
     
     #dbからメールアドレスを取る
@@ -48,9 +48,6 @@ def task():
     print(email_dicts)
 
     main.execute_email_jobs(exe_date,email_dicts)
-    #TODO　リクエストに入ってるメッセージxidを取得したい
-    print("ここを見るねん")
-    print(request.json)
 
 
 def schedule_init():
