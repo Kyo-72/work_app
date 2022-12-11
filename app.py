@@ -48,6 +48,9 @@ def task():
     print(email_dicts)
 
     main.execute_email_jobs(exe_date,email_dicts)
+    #TODO　リクエストに入ってるメッセージxidを取得したい
+    print("ここを見るねん")
+    print(request.args.get("X-Message-Id"))
 
 
 def schedule_init():
