@@ -16,7 +16,7 @@ def send_email(tolist,days_later,gmail_address,gmail_pass,admin_emails):
     to_email = [ To(email) for email in list]
     subject = execute_date.strftime('%m/%d(%a)')
     content = Content("text/html",Path('./email.txt').read_text())
-    mail = Mail(from_email, gmail_address, subject, content)
+    mail = Mail(from_email,to_email, subject, content)
     response = sg.client.mail.send.post(request_body=mail.get())
     print(response.status_code)
     print(response.body)
