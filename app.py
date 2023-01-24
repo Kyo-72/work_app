@@ -10,7 +10,7 @@ from email_programs import main
 
 app = Flask(__name__)
 #dbのURLを設定
-db_uri = "postgresql://ucluwtkwtninbh:17c5b354b389b5dc03de208ee3b4e3e0037090e8626e2d7407f444ccb9c3bc8a@ec2-23-23-182-238.compute-1.amazonaws.com:5432/d94kl4sbb8v1ka" or "postgresql://localhost/email"
+db_uri = "postgresql://postgres:tanukitanu99@localhost/work_app"
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri 
 db = SQLAlchemy(app) 
 
@@ -30,10 +30,14 @@ class Config(db.Model):
     exe_min = db.Column(db.Integer(), nullable=False) # メール送信時間（分）
     
 #設定情報をdbから持ってくる
-config = db.session.query(Config).filter_by(id=2).first()
+with app.app_context():
+    config = db.session.query(Config).filter_by(id=1).first()
+
+print(config)
 exe_date = config.exe_date
 exe_hour = config.exe_hour
 exe_min = config.exe_min
+
 
 
 #main.pyをたたく
@@ -78,7 +82,7 @@ def index():
 
     #GEtなら現在の設定日時を表示する
     if request.method == "GET":
-        config = db.session.query(Config).filter_by(id=2).first()
+        config = db.session.query(Config).filter_by(id=1).first()
         exe_date = config.exe_date
         exe_hour = config.exe_hour
         exe_min = config.exe_min
@@ -88,7 +92,7 @@ def index():
     #POSTなら、設定時刻を更新してスケジューラをシャットダウン，タスクを追加後，起動
     else:
 
-        config = db.session.query(Config).filter_by(id=2).first()
+        config = db.session.query(Config).filter_by(id=1).first()
         
         exe_date = int ( request.form.get("exe_date") )
         #hh:mm形式で時間を取得
