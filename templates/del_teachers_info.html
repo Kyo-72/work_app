@@ -5,9 +5,9 @@
     <form method="post">
         
         <p>
-            <select name="address" >   
-                {%  for email in emails: %}
-                    <option value= {{email.id}}>{{email.last_name + " " + email.first_name + "\t:\t" + email.email_address}}</option>
+            <select name="del_sel" >   
+                {%  for teacher in teachers: %}
+                    <option value= {{teacher.id}}>{{teacher.last_name + " " + teacher.first_name + "\t:\t" + teacher.email_address}}</option>
                 {% endfor %}          
             </select>
         </p>     

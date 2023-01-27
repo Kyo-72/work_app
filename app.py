@@ -5,6 +5,15 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from email_programs import main
 
+from sqlalchemy.types import Float,Boolean
+from sqlalchemy.types import Integer
+from sqlalchemy.types import String
+from sqlalchemy.types import DateTime,Date
+from sqlalchemy.sql.functions import current_timestamp
+
+from sqlalchemy import Column, ForeignKey, Integer, Table
+from sqlalchemy.orm import declarative_base, relationship
+
 
 #DB
 
@@ -28,6 +37,34 @@ class Config(db.Model):
     exe_date = db.Column(db.Integer(), nullable=False) # メール送信日 0:当日，1:前日，2:2二日前
     exe_hour = db.Column(db.Integer(), nullable=False) # メール送信時間（時間）
     exe_min = db.Column(db.Integer(), nullable=False) # メール送信時間（分）
+
+
+class Branch(db.Model):
+    __tablename__ = "branches"
+    id = db.Column(db.Integer, primary_key=True) # id
+    name = db.Column(db.String, nullable=False) #支店の名前
+    teachers = relationship("Teacher")
+
+class Teacher(db.Model):
+    __tablename__ = "teachers"
+    id = db.Column(db.Integer, primary_key=True) 
+    last_name = db.Column(db.String(), nullable=False) # 姓
+    first_name = db.Column(db.String(), nullable=False) # 名前
+    email_address = db.Column(db.String(), nullable=False) # メールアドレス
+    grade = db.Column(db.Integer, nullable=False) #学年（学生以外は0）
+    branch_id = Column("branch_id", Integer(), ForeignKey('branches.id',onupdate='CASCADE'))
+    mail_histories = relationship("Mail_history")
+
+
+class Mail_history(db.Model):
+    __tablename__ = "mail_histories"
+    x_id = db.Column(db.String, primary_key=True) # 送信されたメールごとの識別子
+    work_date = db.Column(db.Date,nullable=False)
+    teachers_id = Column("teachers_id",Integer(),ForeignKey('teachers.id',onupdate='CASCADE'))
+    created_at = Column(DateTime, nullable=True, server_default=current_timestamp())
+    #0 proccessed 1 deliverd, 2 open
+    event_type = db.Column(db.Integer,nullable=False)
+    
     
 #設定情報をdbから持ってくる
 with app.app_context():
@@ -118,43 +155,50 @@ def index():
 
         return redirect("/")
         
-#メールアドレスを追加する
-@app.route("/add_email",methods=["GET","POST"])
-def add_email():
+#講師情報を追加する
+@app.route("/add_teachers_info",methods=["GET","POST"])
+def add_teachers_info():
    
     if request.method == "GET":
         #DBのすべてのクエリを取得
-        emails = Email.query.all()
-        return render_template("add_email.html",emails=emails)
+        teachers = Teacher.query.all()
+        branches = Branch.query.all()
+        return render_template("add_teachers_info.html",teachers=teachers,branches=branches)
     elif request.method == "POST":
 
          #インスタンス作成
-        email = Email()
+        teacher = Teacher()
 
-        #フォームから名前とメールアドレスを取得、txtファイルに書き込む
-        email.last_name = str( request.form.get("last_name") )
-        email.first_name = str( request.form.get("first_name") )
+        #フォームから講師情報を取得
+        teacher.last_name = str( request.form.get("last_name") )
+        teacher.first_name = str( request.form.get("first_name") )
+        teacher.grade = int( request.form.get("grade") )
+        print(teacher.grade)
+        teacher.branch_id =  int( request.form.get("branch_selection") )
+        teacher.email_address = str( request.form.get("email") )
 
-        email.email_address = str( request.form.get("email") )
-        db.session.add(email)
+        db.session.add(teacher)
         db.session.commit()
         db.session.close()
-        return redirect("/add_email")
+        return redirect("/add_teachers_info")
+
+        
+#TODO 講師情報を変更する
 
 #メールアドレスを削除する
-@app.route("/del_email",methods=["GET","POST"])
-def del_email():
+@app.route("/del_teachers_info",methods=["GET","POST"])
+def del_teachers_info():
     if request.method == "GET":
         #DBのすべてのクエリを取得
-        emails = Email.query.all()
-        return render_template("del_email.html",emails=emails)
+        teachers = Teacher.query.all()
+        return render_template("del_teachers_info.html",teachers=teachers)
     else:
         #選択されたクエリをDBから削除する
-        id = request.form["address"] 
-        db.session.query(Email).filter_by(id=id).delete()
+        id = request.form["del_sel"] 
+        db.session.query(Teacher).filter_by(id=id).delete()
         db.session.commit()
         db.session.close()
-        return redirect("/del_email")
+        return redirect("/del_teachers_info")
 
 #SendGrid　webhookからポストを受け取る
 @app.route('/webhook', methods=['POST'])
@@ -162,6 +206,13 @@ def webhook():
     data_list = request.get_json()
     print(data_list)
     return '', 200, {}
+
+
+#TODO メール既読画面
+@app.route('/mail_history')
+def mail_history:
+    pass
+    
 
 
 

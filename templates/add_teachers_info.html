@@ -5,8 +5,8 @@
 
     <p>
         <select name="address_list" size="10">   
-            {%  for email in emails: %}
-                <option value={{email.last_name}}>{{email.last_name + " " + email.first_name + "\t:\t" + email.email_address}}</option>
+            {%  for teacher in teachers: %}
+                <option value={{teacher.last_name}}>{{teacher.last_name + " " + teacher.first_name + "\t:\t" + teacher.email_address}}</option>
             {% endfor %}
                 
             
@@ -34,7 +34,29 @@
     
         <label for="email">Enter your globex.com email:</label>
         <input type="email" id="email" name="email"  size="30" required>
+
+        <h3>教室を選んでください</h3>
     
+        <select name="branch_selection">
+            {% for branch in branches %}
+                <option value={{branch.id}}> {{branch.name}} </option>
+            {% endfor %}
+        </select>
+
+        <h3>学年を選んでください</h3>
+
+        <select name="grade">
+            {% for grade in  range(7)%}
+                {% if grade == 0 %}
+                    <option value={{grade}}> 社員 </option>
+                {% else %}
+                    <option value={{grade}}> {{grade}} </option>
+                {% endif %}
+                
+            {% endfor %}
+        </select>
+
+
         <p><input type="submit" value="追加する"></p>
         
     </form>
