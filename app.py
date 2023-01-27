@@ -210,7 +210,7 @@ def webhook():
 
 #TODO メール既読画面
 @app.route('/mail_history')
-def mail_history:
+def mail_history():
     pass
     
 
