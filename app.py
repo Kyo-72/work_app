@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import render_template,request,redirect
@@ -19,7 +20,7 @@ from sqlalchemy.orm import declarative_base, relationship
 
 app = Flask(__name__)
 #dbのURLを設定
-db_uri = "postgresql://postgres:tanukitanu99@localhost/work_app"
+db_uri = "postgresql://postgres:tanukitanu99@localhost/work_app" or os.environ.get('DATABASE_URL') 
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri 
 db = SQLAlchemy(app) 
 
