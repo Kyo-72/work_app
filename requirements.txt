@@ -24,6 +24,7 @@ exceptiongroup==1.1.0
 Flask==2.2.2
 Flask-SQLAlchemy==3.0.2
 greenlet==2.0.2
+gunicorn==20.1.0
 h11==0.14.0
 httplib2==0.14.0
 hyperlink==19.0.0
