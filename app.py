@@ -20,8 +20,8 @@ from sqlalchemy.orm import declarative_base, relationship
 
 app = Flask(__name__)
 #dbのURLを設定
-db_uri = os.environ.get('DATABASE_URL') or "postgresql://postgres:postgres@localhost/work_app"
-db_uri.replace("://", "ql://", 1);
+db_uri = os.environ.get('DATABASE_URL') or "postgres://postgres:postgres@localhost/work_app"
+db_uri = db_uri.replace("://", "ql://", 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri 
 db = SQLAlchemy(app) 
 
