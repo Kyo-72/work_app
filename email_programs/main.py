@@ -6,6 +6,7 @@ from email_programs import sendemail
 from email_programs import get_schedule
 import os
 import json
+import pprint
 
 # from address import email_resister
 
@@ -15,6 +16,7 @@ def execute_email_jobs(days_later,email_address):
     gmail_address = os.getenv("ADMIN_GMAIL_ADDRESS")
     gmail_pass = os.getenv("ADMIN_GMAIL_KEY")
     admin_emails_json = os.getenv("ADMIN_EMAILS_JSON")
+    pprint.pprint(admin_emails_json)
     admin_emails = json.loads(admin_emails_json)
 
     myclass_id = os.getenv("MYCLASS_ID")

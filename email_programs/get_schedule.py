@@ -11,6 +11,7 @@ from time import sleep
 import requests
 import re
 from bs4 import BeautifulSoup
+from selenium.webdriver.common.by import By
 
 # chromedriverの設定
 options = Options()
@@ -43,17 +44,18 @@ def getSchedule(days_later,myclass_id,myclass_password):
     
 
     #ログイン処理
-    elem_username = browser.find_element_by_id('loginId')
+    print(browser)
+    elem_username = browser.find_element(By.ID,'loginId')
     elem_username.send_keys(myclass_id)
 
-    elem_password = browser.find_element_by_id('password')
+    elem_password = browser.find_element(By.ID,'password')
     elem_password.send_keys(myclass_password)
 
-    elem_loginbtn = browser.find_element_by_tag_name('button')
+    elem_loginbtn = browser.find_element(By.TAG_NAME,'button')
     elem_loginbtn.click()
 
     #全体のスケジュールページに飛ぶ
-    browser.find_element_by_xpath('/html/body/main/div/p/a').click()
+    browser.find_element(By.XPATH,'/html/body/main/div/p/a').click()
 
     #ページのhtmlを取得、BeautifulSoupオブジェクトへ
     html = browser.page_source.encode('utf-8')

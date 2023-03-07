@@ -81,13 +81,14 @@ exe_min = config.exe_min
 
 #main.pyをたたく
 def task():
-    
+    teachers = []
     #dbからメールアドレスを取る
-    email_address = Email.query.all()
+    with app.app_context():
+     teachers = Teacher.query.all()
     email_dicts = {}
-    for email in email_address:
-        name = email.last_name + " " + email.first_name
-        email_dicts[name] = email.email_address
+    for teacher in teachers:
+        name = teacher.last_name + " " + teacher.first_name
+        email_dicts[name] = teacher.email_address
     print(email_dicts)
 
     x_id = main.execute_email_jobs(exe_date,email_dicts)
