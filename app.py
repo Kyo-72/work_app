@@ -55,17 +55,24 @@ class Teacher(db.Model):
     email_address = db.Column(db.String(), nullable=False) # メールアドレス
     grade = db.Column(db.Integer, nullable=False) #学年（学生以外は0）
     branch_id = Column("branch_id", Integer(), ForeignKey('branches.id',onupdate='CASCADE'))
-    mail_histories = relationship("Mail_history")
+    mail_histories = relationship("Activity_history")
 
 
 class Mail_history(db.Model):
     __tablename__ = "mail_histories"
     x_id = db.Column(db.String, primary_key=True) # 送信されたメールごとの識別子
-    work_date = db.Column(db.Date,nullable=False)
-    teachers_id = Column("teachers_id",Integer(),ForeignKey('teachers.id',onupdate='CASCADE'))
+    work_date = db.Column(db.Date,nullable=True)
     created_at = Column(DateTime, nullable=True, server_default=current_timestamp())
-    #0 proccessed 1 deliverd, 2 open
-    event_type = db.Column(db.Integer,nullable=False)
+    activity_histories = relationship("Activity_history")
+    
+    
+class Activity_history(db.Model):
+     __tablename__ = "activity_histories"
+     id = db.Column(db.Integer, primary_key=True) # id
+     teachers_id = Column("teachers_id",Integer(),ForeignKey('teachers.id',onupdate='CASCADE'))
+     work_date = Column("work_date",db.Date,ForeignKey('work_date',onupdate='CASCADE'))
+     #0 proccessed 1 deliverd, 2 open
+     event_type = db.Column(db.Integer,nullable=False)
     
     
 #設定情報をdbから持ってくる
