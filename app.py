@@ -26,13 +26,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 db = SQLAlchemy(app) 
 
 #メールアドレス管理用DB
-class Email(db.Model): 
-    __tablename__ = "emails" 
-    id = db.Column(db.Integer, primary_key=True) # 識別子（特に使わない）
-    last_name = db.Column(db.String(), nullable=False) # 姓
-    first_name = db.Column(db.String(), nullable=False) # 名
-    email_address = db.Column(db.String(), nullable=False) # メールアドレス
-
 class Config(db.Model): 
     __tablename__ = "configs" 
     id = db.Column(db.Integer, primary_key=True) # 識別子（特に使わない）
@@ -70,7 +63,7 @@ class Activity_history(db.Model):
      __tablename__ = "activity_histories"
      id = db.Column(db.Integer, primary_key=True) # id
      teachers_id = Column("teachers_id",Integer(),ForeignKey('teachers.id',onupdate='CASCADE'))
-     work_date = Column("work_date",db.Date,ForeignKey('work_date',onupdate='CASCADE'))
+     x_id = Column("x_id",db.String,ForeignKey('mail_histories.x_id',onupdate='CASCADE'))
      #0 proccessed 1 deliverd, 2 open
      event_type = db.Column(db.Integer,nullable=False)
     
