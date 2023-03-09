@@ -207,7 +207,7 @@ def del_teachers_info():
 @app.route('/webhook', methods=['POST'])
 def webhook():
     data_list = request.get_json()
-    print(data_list)
+    print(data_list[emial])
     return '', 200, {}
 
 
