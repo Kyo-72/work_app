@@ -33,7 +33,6 @@ class Config(db.Model):
     exe_hour = db.Column(db.Integer(), nullable=False) # メール送信時間（時間）
     exe_min = db.Column(db.Integer(), nullable=False) # メール送信時間（分）
 
-
 class Branch(db.Model):
     __tablename__ = "branches"
     id = db.Column(db.Integer, primary_key=True) # id
@@ -64,6 +63,7 @@ class Activity_history(db.Model):
      id = db.Column(db.Integer, primary_key=True) # id
      teachers_id = Column("teachers_id",Integer(),ForeignKey('teachers.id',onupdate='CASCADE'))
      x_id = Column("x_id",db.String,ForeignKey('mail_histories.x_id',onupdate='CASCADE'))
+     work_date = db.Column(db.Date,nullable=False)
      #0 proccessed 1 deliverd, 2 open
      event_type = db.Column(db.Integer,nullable=False)
     
