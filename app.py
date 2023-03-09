@@ -207,7 +207,7 @@ def del_teachers_info():
 #SendGrid　webhookからポストを受け取る
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    data_list = json.load( request.get_json() )
+    data_list = request.get_json()
     print(data_list[emial])
     return '', 200, {}
 
