@@ -1,4 +1,5 @@
 import os
+import enum
 from flask import Flask
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import render_template,request,redirect
@@ -9,7 +10,7 @@ from email_programs import main
 from sqlalchemy.types import Float,Boolean
 from sqlalchemy.types import Integer
 from sqlalchemy.types import String
-from sqlalchemy.types import DateTime,Date
+from sqlalchemy.types import DateTime,Date,Enum
 from sqlalchemy.sql.functions import current_timestamp
 
 from sqlalchemy import Column, ForeignKey, Integer, Table
@@ -24,6 +25,12 @@ db_uri = os.environ.get('DATABASE_URL') or "postgres://postgres:postgres@localho
 db_uri = db_uri.replace("://", "ql://", 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri 
 db = SQLAlchemy(app) 
+
+
+class Event_type(str,enum.Enum):
+    open = "open"
+    deliverd = "deliverd"
+    proccessed = "proccessed"
 
 #メールアドレス管理用DB
 class Config(db.Model): 
@@ -65,7 +72,7 @@ class Activity_history(db.Model):
      x_id = Column("x_id",db.String,ForeignKey('mail_histories.x_id',onupdate='CASCADE'))
      time_record = Column(DateTime, nullable=False)
      #0 proccessed 1 deliverd, 2 open
-     event_type = db.Column(db.Integer,nullable=False)
+     event_type = Column(Enum(Event_type),nullable=False)
     
     
 #設定情報をdbから持ってくる
