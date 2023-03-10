@@ -63,6 +63,7 @@ class Activity_history(db.Model):
      id = db.Column(db.Integer, primary_key=True) # id
      teachers_id = Column("teachers_id",Integer(),ForeignKey('teachers.id',onupdate='CASCADE'))
      x_id = Column("x_id",db.String,ForeignKey('mail_histories.x_id',onupdate='CASCADE'))
+     time_record = Column(DateTime, nullable=False)
      work_date = db.Column(db.Date,nullable=False)
      #0 proccessed 1 deliverd, 2 open
      event_type = db.Column(db.Integer,nullable=False)
@@ -206,7 +207,8 @@ def del_teachers_info():
 #SendGrid　webhookからポストを受け取る
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    data_list = request.get_json()
+    # data_list = request.get_json()
+    data_list = [{'email': 'seino0702@gmail.com', 'event': 'open', 'ip': '66.249.84.53', 'sg_content_type': 'html', 'sg_event_id': '7SySn_H4QJa5e6gGSVfw1w', 'sg_machine_open': False, 'sg_message_id': 'kWUYivbIRzSjc8PMp3xTNg.filterdrecv-68f8d557c9-cxx9p-1-640894F4-127.9', 'timestamp': 1678336248, 'useragent': 'Mozilla/5.0 (Windows NT 5.1; rv:11.0) Gecko Firefox/11.0 (via ggpht.com GoogleImageProxy)'}]
     print(data_list)
     return '', 200, {}
 
@@ -215,6 +217,22 @@ def webhook():
 @app.route('/mail_history')
 def mail_history():
     pass
+
+
+data_list = [{'email': 'seino0702@gmail.com', 'event': 'open', 'ip': '66.249.84.53', 'sg_content_type': 'html', 'sg_event_id': '7SySn_H4QJa5e6gGSVfw1w', 'sg_machine_open': False, 'sg_message_id': 'kWUYivbIRzSjc8PMp3xTNg.filterdrecv-68f8d557c9-cxx9p-1-640894F4-127.9', 'timestamp': 1678336248, 'useragent': 'Mozilla/5.0 (Windows NT 5.1; rv:11.0) Gecko Firefox/11.0 (via ggpht.com GoogleImageProxy)'}]
+email_from_sg = ""
+event = ""
+timestamp = ""
+sg_message_id = ""
+for d in data_list:
+    email_from_sg = d['email']
+    event = d['event']
+    timestamp =  d['timestamp']  
+    sg_message_id = d['sg_message_id']
+
+
+    
+    
     
 
 
