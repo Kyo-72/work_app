@@ -64,7 +64,6 @@ class Activity_history(db.Model):
      teachers_id = Column("teachers_id",Integer(),ForeignKey('teachers.id',onupdate='CASCADE'))
      x_id = Column("x_id",db.String,ForeignKey('mail_histories.x_id',onupdate='CASCADE'))
      time_record = Column(DateTime, nullable=False)
-     work_date = db.Column(db.Date,nullable=False)
      #0 proccessed 1 deliverd, 2 open
      event_type = db.Column(db.Integer,nullable=False)
     
