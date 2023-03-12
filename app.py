@@ -15,6 +15,7 @@ from sqlalchemy.sql.functions import current_timestamp
 
 from sqlalchemy import Column, ForeignKey, Integer, Table
 from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.sql import exists
 
 
 #DB
@@ -210,7 +211,7 @@ def del_teachers_info():
         db.session.close()
         return redirect("/del_teachers_info")
 
-#SendGrid　webhookからポストを受け取る
+#SendGrid　webhookからポストを受け取り、activity_historiesを更新
 @app.route('/webhook', methods=['POST'])
 def webhook():
     # data_list = request.get_json()
@@ -226,19 +227,76 @@ def mail_history():
 
 
 data_list = [{'email': 'seino0702@gmail.com', 'event': 'open', 'ip': '66.249.84.53', 'sg_content_type': 'html', 'sg_event_id': '7SySn_H4QJa5e6gGSVfw1w', 'sg_machine_open': False, 'sg_message_id': 'kWUYivbIRzSjc8PMp3xTNg.filterdrecv-68f8d557c9-cxx9p-1-640894F4-127.9', 'timestamp': 1678336248, 'useragent': 'Mozilla/5.0 (Windows NT 5.1; rv:11.0) Gecko Firefox/11.0 (via ggpht.com GoogleImageProxy)'}]
-email_from_sg = ""
-event = ""
-timestamp = ""
-sg_message_id = ""
-for d in data_list:
-    email_from_sg = d['email']
-    event = d['event']
-    timestamp =  d['timestamp']  
-    sg_message_id = d['sg_message_id']
+data_dict = data_list[0]
+
+email_from_sg = data_dict['email']
+event = data_dict['event']
+timestamp =  data_dict['timestamp']  
+sg_message_id = data_dict['sg_message_id']
+
+#mail_historiesからwork_date,teachersからteachers.idを所得
+mail_history = Mail_history()
+teacher = Teacher()
+
+with app.app_context():
+    #TODO mail_historyがない時の処理を考える
+    mail_history =  db.session.query(Mail_history).filter_by(x_id=sg_message_id).first() 
+
+print(mail_history)
+
+with app.app_context():
+    teacher = db.session.query(Teacher).filter_by(email_address=email_from_sg).first() 
+
+work_date = mail_history.work_date
+activity_history = Activity_history()
+#acitivity_historiesに登録されているか確認
+activity_existance = True
+with app.app_context():
+    activity_existance = db.session.query(Activity_history.query.filter(Activity_history.x_id == sg_message_id,Activity_history.teachers_id == teacher.id).exists()).scalar()
 
 
+if(activity_existance):
+    with app.app_context():
+        activity_history =  db.session.query(Activity_history).filter(Activity_history.x_id == sg_message_id, Activity_history.teachers_id == teacher.id)
+        #eventタイプによって処理を分ける
+        
     
+else:
+    same_day_existance = False
+    #同日のactivity_historyがないか確認
+    with app.app_context():
+        same_day_existance = db.session.query(Mail_history.query.filter(Mail_history.work_date == work_date).exists()).scalar()
+    # if(same_day_existance):
+        # #eventの種類を調べる
+        # exsit_x_id = ""
+        # with app.app_context():
+        #     exsit_x_id = db.session.query(Mail_history).filter(Mail_history.work_date == work_date)
+        # with app.app_context():
+        #     activity_history =  db.session.query(Activity_history).filter(Activity_history.x_id == exsit_x_id, Activity_history.teachers_id == teacher.id).first()
+        #     print("ここやで")
+        #     print(activity_history)
+        # event = activity_history.event_type
+    # else:
+
+    #mail_historiesに登録する
     
+    activity_history = Activity_history()
+    activity_history.teachers_id = teacher.id
+    activity_history.time_record =  datetime.fromtimestamp(timestamp)
+    activity_history.event_type = event
+    activity_history.x_id = sg_message_id
+    print(sg_message_id)
+    with app.app_context():
+        db.session.add(activity_history)
+        db.session.commit()
+        db.session.close()
+
+
+
+
+
+        
+
     
 
 
