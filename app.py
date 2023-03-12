@@ -30,7 +30,7 @@ db = SQLAlchemy(app)
 
 class Event_type(str,enum.Enum):
     open = "open"
-    deliverd = "deliverd"
+    delivered = "delivered"
     proccessed = "proccessed"
 
 #メールアドレス管理用DB
@@ -72,7 +72,7 @@ class Activity_history(db.Model):
      teachers_id = Column("teachers_id",Integer(),ForeignKey('teachers.id',onupdate='CASCADE'))
      x_id = Column("x_id",db.String,ForeignKey('mail_histories.x_id',onupdate='CASCADE'))
      time_record = Column(DateTime, nullable=False)
-     #0 proccessed 1 deliverd, 2 open
+     #0 proccessed 1 delivered, 2 open
      event_type = Column(Enum(Event_type),nullable=False)
     
     
@@ -215,7 +215,6 @@ def del_teachers_info():
 @app.route('/webhook', methods=['POST'])
 def webhook():
     # data_list = request.get_json()
-    data_list = [{'email': 'seino0702@gmail.com', 'event': 'open', 'ip': '66.249.84.53', 'sg_content_type': 'html', 'sg_event_id': '7SySn_H4QJa5e6gGSVfw1w', 'sg_machine_open': False, 'sg_message_id': 'kWUYivbIRzSjc8PMp3xTNg.filterdrecv-68f8d557c9-cxx9p-1-640894F4-127.9', 'timestamp': 1678336248, 'useragent': 'Mozilla/5.0 (Windows NT 5.1; rv:11.0) Gecko Firefox/11.0 (via ggpht.com GoogleImageProxy)'}]
     print(data_list)
     return '', 200, {}
 
@@ -226,7 +225,24 @@ def mail_history():
     pass
 
 
-data_list = [{'email': 'seino0702@gmail.com', 'event': 'open', 'ip': '66.249.84.53', 'sg_content_type': 'html', 'sg_event_id': '7SySn_H4QJa5e6gGSVfw1w', 'sg_machine_open': False, 'sg_message_id': 'kWUYivbIRzSjc8PMp3xTNg.filterdrecv-68f8d557c9-cxx9p-1-640894F4-127.9', 'timestamp': 1678336248, 'useragent': 'Mozilla/5.0 (Windows NT 5.1; rv:11.0) Gecko Firefox/11.0 (via ggpht.com GoogleImageProxy)'}]
+def event_swicth(event,pre_event):
+    res = Event_type.open
+    if(pre_event == Event_type.open):
+        return None
+    elif(pre_event == Event_type.delivered and event == Event_type.open):
+        #deliver -> open
+        res = Event_type.open
+    elif(pre_event == Event_type.proccessed and event == Event_type.delivered):
+        #proccessed -> delivered
+        res = Event_type.delivered
+    else:
+        print("delivered unknown activity")
+        res = None
+
+    return res
+
+
+data_list = [{'email': 'seino0702@gmail.com', 'event': 'open', 'ip': '66.249.84.53', 'sg_content_type': 'html', 'sg_event_id': '7SySn_H4QJa5e6gGSVfw1w', 'sg_machine_open': False, 'sg_message_id': 'kWUYivbIRzSjc8PMp3xTNg.filterdrecv-68f8d557c9-cxx9p-1-640894F4-127.9', 'timestamp': 5079000000, 'useragent': 'Mozilla/5.0 (Windows NT 5.1; rv:11.0) Gecko Firefox/11.0 (via ggpht.com GoogleImageProxy)'}]
 data_dict = data_list[0]
 
 email_from_sg = data_dict['email']
@@ -239,57 +255,72 @@ mail_history = Mail_history()
 teacher = Teacher()
 
 with app.app_context():
-    #TODO mail_historyがない時の処理を考える
+    #飛んできたactivityに該当するmail_historyを取得
     mail_history =  db.session.query(Mail_history).filter_by(x_id=sg_message_id).first() 
+    if(mail_history == None):
+        print("mail_historyがありません")
+        exit()
 
-print(mail_history)
+    work_date = mail_history.work_date
 
-with app.app_context():
+    #飛んできたactivityに対応するteacherを取得
     teacher = db.session.query(Teacher).filter_by(email_address=email_from_sg).first() 
-
-work_date = mail_history.work_date
-activity_history = Activity_history()
-#acitivity_historiesに登録されているか確認
-activity_existance = True
-with app.app_context():
-    activity_existance = db.session.query(Activity_history.query.filter(Activity_history.x_id == sg_message_id,Activity_history.teachers_id == teacher.id).exists()).scalar()
-
-
-if(activity_existance):
-    with app.app_context():
-        activity_history =  db.session.query(Activity_history).filter(Activity_history.x_id == sg_message_id, Activity_history.teachers_id == teacher.id)
-        #eventタイプによって処理を分ける
+    if(teacher == None):
+        print("該当するteacherが見つかりません")
+        exit()
         
-    
-else:
-    same_day_existance = False
-    #同日のactivity_historyがないか確認
-    with app.app_context():
-        same_day_existance = db.session.query(Mail_history.query.filter(Mail_history.work_date == work_date).exists()).scalar()
-    # if(same_day_existance):
-        # #eventの種類を調べる
-        # exsit_x_id = ""
-        # with app.app_context():
-        #     exsit_x_id = db.session.query(Mail_history).filter(Mail_history.work_date == work_date)
-        # with app.app_context():
-        #     activity_history =  db.session.query(Activity_history).filter(Activity_history.x_id == exsit_x_id, Activity_history.teachers_id == teacher.id).first()
-        #     print("ここやで")
-        #     print(activity_history)
-        # event = activity_history.event_type
-    # else:
-
-    #mail_historiesに登録する
-    
+    #activity
     activity_history = Activity_history()
-    activity_history.teachers_id = teacher.id
-    activity_history.time_record =  datetime.fromtimestamp(timestamp)
-    activity_history.event_type = event
-    activity_history.x_id = sg_message_id
-    print(sg_message_id)
-    with app.app_context():
-        db.session.add(activity_history)
+    activity_history =  db.session.query(Activity_history).filter(Activity_history.x_id == sg_message_id, Activity_history.teachers_id == teacher.id).first()
+    if(activity_history == None):
+
+        #同日のactivity_historyがないか確認
+        same_day_history = None
+        # same_day_history = Mail_history()
+        # same_day_history = db.session.query(Mail_history.query).filter(Mail_history.work_date == work_date).first()
+        #同日のactivityが登録されていない場合
+        if(same_day_history == None):
+            #mail_historiesに登録する
+            new_activity_history = Activity_history()
+            new_activity_history.teachers_id = teacher.id
+            new_activity_history.time_record =  datetime.fromtimestamp(timestamp)
+            new_activity_history.event_type = event
+            new_activity_history.x_id = sg_message_id
+            print(sg_message_id)
+            
+            db.session.add(new_activity_history)
+            db.session.commit()
+            db.session.close()
+        #既にメールが送信されている場合(登録コーチが二つのメールで異なる場合は考えていない)
+        else:
+            #TODOactivity 
+            pass
+            
+
+        
+
+    #その日のactivityが既に存在する場合  
+    else:
+        pre_event = activity_history.event_type
+        next_event = event_swicth(event,pre_event)
+        if(next_event == None):
+            #openに対しては何もしない
+            pass
+        elif(next_event == Event_type.open):
+            #更新時間変更、イベントをopenに
+            activity_history.time_record = datetime.fromtimestamp(timestamp)
+            activity_history.event_type = event
+        elif(next_event == Event_type.delivered):
+            #更新時間変更　イベントをdeliveredに
+            activity_history.time_record = datetime.fromtimestamp(timestamp)
+            activity_history.event_type = event
+            
+    
         db.session.commit()
         db.session.close()
+        
+
+       
 
 
 
