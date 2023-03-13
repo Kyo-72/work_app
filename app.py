@@ -32,7 +32,7 @@ db = SQLAlchemy(app)
 class Event_type(str,enum.Enum):
     open = "open"
     delivered = "delivered"
-    proccessed = "proccessed"
+    processed = "processed"
 
 #メールアドレス管理用DB
 class Config(db.Model): 
@@ -73,7 +73,7 @@ class Activity_history(db.Model):
      teachers_id = Column("teachers_id",Integer(),ForeignKey('teachers.id',onupdate='CASCADE'))
      x_id = Column("x_id",db.String,ForeignKey('mail_histories.x_id',onupdate='CASCADE'))
      time_record = Column(DateTime, nullable=False)
-     #0 proccessed 1 delivered, 2 open
+     #0 processed 1 delivered, 2 open
      event_type = Column(Enum(Event_type),nullable=False)
     
     
@@ -235,8 +235,8 @@ def event_swicth(event,pre_event):
     elif(event == Event_type.open):
         #deliver -> open
         res = Event_type.open
-    elif(pre_event == Event_type.proccessed and event == Event_type.delivered):
-        #proccessed -> delivered
+    elif(pre_event == Event_type.processed and event == Event_type.delivered):
+        #processed -> delivered
         res = Event_type.delivered
     else:
         print("delivered unknown activity")
