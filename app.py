@@ -266,15 +266,17 @@ def webhook():
         mail_history =  db.session.query(Mail_history).filter_by(x_id=sg_message_id).first() 
         if(mail_history == None):
             print("mail_historyがありません")
-            exit()
+
+            return 'Mail_history does not exist' ,400
+
         #たぶんいらない1行
         work_date = mail_history.work_date
 
         #飛んできたactivityに対応するteacherを取得
         teacher = db.session.query(Teacher).filter_by(email_address=email_from_sg).first() 
         if(teacher == None):
-            print("該当するteacherが見つかりません")
-            exit()
+            
+            return 'teacher does not exist' ,400
             
         #activity
         activity_history = Activity_history()
@@ -313,6 +315,8 @@ def webhook():
         
             db.session.commit()
             db.session.close()
+
+    return 'success', 200
 
 
 #TODO メール既読画面
