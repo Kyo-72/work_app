@@ -250,7 +250,8 @@ def webhook():
     email_from_sg = data_dict['email']
     event = data_dict['event']
     timestamp =  data_dict['timestamp']  
-    sg_message_id = data_dict['sg_message_id']
+    sg_message_id = data_dict['sg_message_id'].split(".")[0]
+    
 
     #mail_historiesからwork_date,teachersからteachers.idを所得
     mail_history = Mail_history()
@@ -314,6 +315,13 @@ def webhook():
 @app.route('/mail_history')
 def mail_history():
     pass
+
+
+
+
+# data_list = [{'email': 'seino0702@gmail.com', 'event': 'open', 'ip': '66.249.84.53', 'sg_content_type': 'html', 'sg_event_id': '7SySn_H4QJa5e6gGSVfw1w', 'sg_machine_open': False, 'sg_message_id': 'kWUYivbIRzSjc8PMp3xTNg.filterdrecv-68f8d557c9-cxx9p-1-640894F4-127.9', 'timestamp': 1678336248, 'useragent': 'Mozilla/5.0 (Windows NT 5.1; rv:11.0) Gecko Firefox/11.0 (via ggpht.com GoogleImageProxy)'}]
+
+
 
 
 
