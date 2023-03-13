@@ -1,4 +1,5 @@
 import os
+import enum
 import json,pprint
 from flask import Flask
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -10,11 +11,12 @@ from email_programs import main
 from sqlalchemy.types import Float,Boolean
 from sqlalchemy.types import Integer
 from sqlalchemy.types import String
-from sqlalchemy.types import DateTime,Date
+from sqlalchemy.types import DateTime,Date,Enum
 from sqlalchemy.sql.functions import current_timestamp
 
 from sqlalchemy import Column, ForeignKey, Integer, Table
 from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.sql import exists
 
 
 #DB
@@ -26,21 +28,19 @@ db_uri = db_uri.replace("://", "ql://", 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri 
 db = SQLAlchemy(app) 
 
-#メールアドレス管理用DB
-class Email(db.Model): 
-    __tablename__ = "emails" 
-    id = db.Column(db.Integer, primary_key=True) # 識別子（特に使わない）
-    last_name = db.Column(db.String(), nullable=False) # 姓
-    first_name = db.Column(db.String(), nullable=False) # 名
-    email_address = db.Column(db.String(), nullable=False) # メールアドレス
 
+class Event_type(str,enum.Enum):
+    open = "open"
+    delivered = "delivered"
+    proccessed = "proccessed"
+
+#メールアドレス管理用DB
 class Config(db.Model): 
     __tablename__ = "configs" 
     id = db.Column(db.Integer, primary_key=True) # 識別子（特に使わない）
     exe_date = db.Column(db.Integer(), nullable=False) # メール送信日 0:当日，1:前日，2:2二日前
     exe_hour = db.Column(db.Integer(), nullable=False) # メール送信時間（時間）
     exe_min = db.Column(db.Integer(), nullable=False) # メール送信時間（分）
-
 
 class Branch(db.Model):
     __tablename__ = "branches"
@@ -56,17 +56,25 @@ class Teacher(db.Model):
     email_address = db.Column(db.String(), nullable=False) # メールアドレス
     grade = db.Column(db.Integer, nullable=False) #学年（学生以外は0）
     branch_id = Column("branch_id", Integer(), ForeignKey('branches.id',onupdate='CASCADE'))
-    mail_histories = relationship("Mail_history")
+    mail_histories = relationship("Activity_history")
 
 
 class Mail_history(db.Model):
     __tablename__ = "mail_histories"
     x_id = db.Column(db.String, primary_key=True) # 送信されたメールごとの識別子
-    work_date = db.Column(db.Date,nullable=False)
-    teachers_id = Column("teachers_id",Integer(),ForeignKey('teachers.id',onupdate='CASCADE'))
+    work_date = db.Column(db.Date,nullable=True)
     created_at = Column(DateTime, nullable=True, server_default=current_timestamp())
-    #0 proccessed 1 deliverd, 2 open
-    event_type = db.Column(db.Integer,nullable=False)
+    activity_histories = relationship("Activity_history")
+    
+    
+class Activity_history(db.Model):
+     __tablename__ = "activity_histories"
+     id = db.Column(db.Integer, primary_key=True) # id
+     teachers_id = Column("teachers_id",Integer(),ForeignKey('teachers.id',onupdate='CASCADE'))
+     x_id = Column("x_id",db.String,ForeignKey('mail_histories.x_id',onupdate='CASCADE'))
+     time_record = Column(DateTime, nullable=False)
+     #0 proccessed 1 delivered, 2 open
+     event_type = Column(Enum(Event_type),nullable=False)
     
     
 #設定情報をdbから持ってくる
@@ -92,9 +100,19 @@ def task():
         email_dicts[name] = teacher.email_address
     print(email_dicts)
 
-    x_id = main.execute_email_jobs(exe_date,email_dicts)
-    print("次はここを見るねん")
-    print(x_id)
+    res = main.execute_email_jobs(exe_date,email_dicts)
+    x_id = res[0]
+    work_date = res[1]
+    #mail_hisoryを登録
+    mail_history = Mail_history()
+    mail_history.x_id = x_id
+    mail_history.work_date = work_date()
+    with app.app_context():
+        db.session.add(mail_history)
+        db.session.commit()
+        db.session.close()
+    
+    
 
 
 def schedule_init():
@@ -204,18 +222,120 @@ def del_teachers_info():
         db.session.close()
         return redirect("/del_teachers_info")
 
-#SendGrid　webhookからポストを受け取る
+
+
+
+def event_swicth(event,pre_event):
+    res = Event_type.open
+    if(pre_event == Event_type.open):
+        return None
+    elif(event == Event_type.open):
+        #deliver -> open
+        res = Event_type.open
+    elif(pre_event == Event_type.proccessed and event == Event_type.delivered):
+        #proccessed -> delivered
+        res = Event_type.delivered
+    else:
+        print("delivered unknown activity")
+        res = None
+
+    return res
+
+#SendGrid　webhookからポストを受け取り、activity_historiesを更新
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    data_list = request.get_json()
-    print(data_list["email"])
-    return '', 200, {}
+    # data_list = request.get_json()
+    print(data_list)
+    data_dict = data_list[0]
+
+    email_from_sg = data_dict['email']
+    event = data_dict['event']
+    timestamp =  data_dict['timestamp']  
+    sg_message_id = data_dict['sg_message_id'].split(".")[0]
+    
+
+    #mail_historiesからwork_date,teachersからteachers.idを所得
+    mail_history = Mail_history()
+    teacher = Teacher()
+
+    with app.app_context():
+        #飛んできたactivityに該当するmail_historyを取得
+        mail_history =  db.session.query(Mail_history).filter_by(x_id=sg_message_id).first() 
+        if(mail_history == None):
+            print("mail_historyがありません")
+            exit()
+
+        work_date = mail_history.work_date
+
+        #飛んできたactivityに対応するteacherを取得
+        teacher = db.session.query(Teacher).filter_by(email_address=email_from_sg).first() 
+        if(teacher == None):
+            print("該当するteacherが見つかりません")
+            exit()
+            
+        #activity
+        activity_history = Activity_history()
+        activity_history =  db.session.query(Activity_history).filter(Activity_history.x_id == sg_message_id, Activity_history.teachers_id == teacher.id).first()
+        if(activity_history == None):
+    
+            #mail_historiesに登録する
+            new_activity_history = Activity_history()
+            new_activity_history.teachers_id = teacher.id
+            new_activity_history.time_record =  datetime.fromtimestamp(timestamp)
+            new_activity_history.event_type = event
+            new_activity_history.x_id = sg_message_id
+            print(sg_message_id)
+            
+            db.session.add(new_activity_history)
+            db.session.commit()
+            db.session.close()
+            #既にメールが送信されている場合(登録コーチが二つのメールで異なる場合は考えていない)
+
+        #その日のactivityが既に存在する場合  
+        else:
+            pre_event = activity_history.event_type
+            next_event = event_swicth(event,pre_event)
+            if(next_event == None):
+                #openに対しては何もしない
+                pass
+            elif(next_event == Event_type.open):
+                #更新時間変更、イベントをopenに
+                activity_history.time_record = datetime.fromtimestamp(timestamp)
+                activity_history.event_type = event
+            elif(next_event == Event_type.delivered):
+                #更新時間変更　イベントをdeliveredに
+                activity_history.time_record = datetime.fromtimestamp(timestamp)
+                activity_history.event_type = event
+                
+        
+            db.session.commit()
+            db.session.close()
 
 
 #TODO メール既読画面
 @app.route('/mail_history')
 def mail_history():
     pass
+
+
+
+
+# data_list = [{'email': 'seino0702@gmail.com', 'event': 'open', 'ip': '66.249.84.53', 'sg_content_type': 'html', 'sg_event_id': '7SySn_H4QJa5e6gGSVfw1w', 'sg_machine_open': False, 'sg_message_id': 'kWUYivbIRzSjc8PMp3xTNg.filterdrecv-68f8d557c9-cxx9p-1-640894F4-127.9', 'timestamp': 1678336248, 'useragent': 'Mozilla/5.0 (Windows NT 5.1; rv:11.0) Gecko Firefox/11.0 (via ggpht.com GoogleImageProxy)'}]
+
+
+
+
+
+
+
+       
+
+
+
+
+
+        
+
     
 
 

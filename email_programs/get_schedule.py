@@ -20,9 +20,6 @@ options.add_argument('--no-sandbox')
 options.add_argument('--disable-dev-shm-usage')
 
 
-
-
-
 def getSchedule(days_later,myclass_id,myclass_password):
 
 
