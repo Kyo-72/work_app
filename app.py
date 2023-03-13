@@ -267,7 +267,7 @@ def webhook():
         if(mail_history == None):
             print("mail_historyがありません")
             exit()
-
+        #たぶんいらない1行
         work_date = mail_history.work_date
 
         #飛んできたactivityに対応するteacherを取得
