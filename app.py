@@ -101,6 +101,9 @@ def task():
     print(email_dicts)
 
     res = main.execute_email_jobs(exe_date,email_dicts)
+    #メールが送信されなかったときは何もしない
+    if(res == None):
+        exit()
     x_id = res[0]
     work_date = res[1]
     #mail_hisoryを登録

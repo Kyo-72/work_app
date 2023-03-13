@@ -27,9 +27,13 @@ def execute_email_jobs(days_later,email_address):
     #メールをテキストファイルに出力
     create_email.Create_Mail(dict)
     list = create_tolist.Create_ToList(dict,email_address,gmail_address,gmail_pass,admin_emails,days_later)
-    #メールを送信する
-    res = sendemail.send_email(list,days_later,gmail_address,gmail_pass,admin_emails)
-    #メール送信リクエスト毎のx_idと授業の日にち
+    #誰も出勤しなければメールを送信しない
+    if(len(list) == 0):
+        res = None
+    else:
+        #メールを送信する
+        res = sendemail.send_email(list,days_later,gmail_address,gmail_pass,admin_emails)
+        #メール送信リクエスト毎のx_idと授業の日にち
     return res
 
 
