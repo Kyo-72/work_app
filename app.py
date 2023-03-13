@@ -244,7 +244,7 @@ def event_swicth(event,pre_event):
 #SendGrid　webhookからポストを受け取り、activity_historiesを更新
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    # data_list = request.get_json()
+    data_list = request.get_json()
     print(data_list)
     data_dict = data_list[0]
 
