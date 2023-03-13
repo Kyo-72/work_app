@@ -99,9 +99,19 @@ def task():
         email_dicts[name] = teacher.email_address
     print(email_dicts)
 
-    x_id = main.execute_email_jobs(exe_date,email_dicts)
-    print("次はここを見るねん")
-    print(x_id)
+    res = main.execute_email_jobs(exe_date,email_dicts)
+    x_id = res[0]
+    work_date = res[1]
+    #mail_hisoryを登録
+    mail_history = Mail_history()
+    mail_history.x_id = x_id
+    mail_history.work_date = work_date()
+    with app.app_context():
+        db.session.add(mail_history)
+        db.session.commit()
+        db.session.close()
+    
+    
 
 
 def schedule_init():

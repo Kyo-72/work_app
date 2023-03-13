@@ -25,5 +25,5 @@ def send_email(tolist,days_later,gmail_address,gmail_pass,admin_emails):
     print(response.headers)
 
     #SendGridリクエストごとのX-idを返す
-    return response.headers["X-Message-Id"]
+    return response.headers["X-Message-Id"] , execute_date.date
    
