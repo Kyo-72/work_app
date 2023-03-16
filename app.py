@@ -235,7 +235,7 @@ def event_swicth(event,pre_event):
     elif(event == Event_type.open):
         #deliver -> open
         res = Event_type.open
-    elif(pre_event == Event_type.processed and event == Event_type.delivered):
+    elif(event == Event_type.delivered):
         #processed -> delivered
         res = Event_type.delivered
     else:
