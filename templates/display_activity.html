@@ -1,0 +1,26 @@
+{% extends "bootstrap/base.html" %}
+{%block content%}
+
+{{ date }}
+
+
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">event</th>
+        <th scope="col">name</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for teacher,event in attendance_dict.items() %}
+        <tr>
+            <th>{{ event }}</th>
+            <th>{{ teacher.last_name + teacher.first_name }}</th>
+            
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+
+{% endblock %}

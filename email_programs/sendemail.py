@@ -13,9 +13,9 @@ def send_email(tolist,days_later,gmail_address,gmail_pass,admin_emails):
     sg = sendgrid.SendGridAPIClient(api_key=os.environ.get('SENDGRID_API_KEY'))
     list = ["seino0702@gmail.com"]
     from_email = From(gmail_address)
-    to_email = [ To(email) for email in tolist]
+    # to_email = [ To(email) for email in tolist]
     #debugモード
-    # to_email = To(gmail_address)
+    to_email = To(gmail_address)
     subject = execute_date.strftime('%m/%d(%a)')
     content = Content("text/html",Path('./email.txt').read_text())
     mail = Mail(from_email,to_email, subject, content)

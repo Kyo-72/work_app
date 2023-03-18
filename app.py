@@ -18,6 +18,8 @@ from sqlalchemy import Column, ForeignKey, Integer, Table
 from sqlalchemy.orm import declarative_base, relationship
 from sqlalchemy.sql import exists
 
+from flask_bootstrap import Bootstrap
+
 
 #DB
 
@@ -27,6 +29,7 @@ db_uri = os.environ.get('DATABASE_URL') or "postgres://postgres:postgres@localho
 db_uri = db_uri.replace("://", "ql://", 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri 
 db = SQLAlchemy(app) 
+bootstrap = Bootstrap(app)
 
 
 class Event_type(str,enum.Enum):
@@ -85,6 +88,8 @@ print(config)
 exe_date = config.exe_date
 exe_hour = config.exe_hour
 exe_min = config.exe_min
+
+today = str( datetime.now().date() )
 
 
 
@@ -320,9 +325,50 @@ def webhook():
 
 
 #TODO メール既読画面
-@app.route('/mail_history')
-def mail_history():
-    pass
+@app.route('/display_activity',methods=['GET','POST'])
+@app.route('/display_activity/<string:date>',methods=['GET','POST'])
+def mail_history(date = today):
+    if request.method == "GET":
+        #該当日のactivity_historyを表示
+        mail_histories = db.session.query(Mail_history).filter_by(work_date=date).all()
+        activity_histories_list = []
+        for mail_history in mail_histories:
+            activity_histories = db.session.query(Activity_history).filter_by(x_id = mail_history.x_id).all()
+            activity_histories_list.append(activity_histories)
+
+        #teachersのリストを取得
+        
+        all_event_dict = {}
+        for activity in activity_histories_list:
+            info = {}
+            for act in activity:
+                teacher = db.session.query(Teacher).filter_by(id = act.teachers_id).first()
+                info[teacher]= act.event_type
+            
+            if(len(activity) != 0):
+                all_event_dict[activity[0].x_id] = info
+
+        attendance_dict = {}
+        #すべてのメールを確認
+        for x_id,teachers in all_event_dict.items():
+            for teacher,event in teachers.items():
+                if(teacher in attendance_dict):
+                    if(attendance_dict[teacher] == Event_type.open):
+                        pass
+                    elif(attendance_dict[teacher] == Event_type.delivered and event == Event_type.open):
+                        attendance_dict[teacher] = event
+                    elif(attendance_dict[teacher] == Event_type.processed):
+                        attendance_dict[teacher] = event
+                else:
+                    attendance_dict[teacher] = event
+
+        print(attendance_dict)
+        return  render_template("display_activity.html",date=date,attendance_dict=attendance_dict)
+
+    elif request.method == "POST":
+        #該当日のactivity_historyを表示
+        # return redirect("/display_activity",date)
+        pass
 
 
 
