@@ -338,32 +338,27 @@ def mail_history(date = today):
 
         #teachersのリストを取得
         
-        all_event_dict = {}
+        teachers_in_act = {}
+        teachers_attendance = {}
         for activity in activity_histories_list:
-            info = {}
             for act in activity:
                 teacher = db.session.query(Teacher).filter_by(id = act.teachers_id).first()
-                info[teacher]= act.event_type
-            
-            if(len(activity) != 0):
-                all_event_dict[activity[0].x_id] = info
-
-        attendance_dict = {}
-        #すべてのメールを確認
-        for x_id,teachers in all_event_dict.items():
-            for teacher,event in teachers.items():
-                if(teacher in attendance_dict):
-                    if(attendance_dict[teacher] == Event_type.open):
-                        pass
-                    elif(attendance_dict[teacher] == Event_type.delivered and event == Event_type.open):
-                        attendance_dict[teacher] = event
-                    elif(attendance_dict[teacher] == Event_type.processed):
-                        attendance_dict[teacher] = event
+                #teacherがteachers_attendanceに登録されていなければ
+                if( not(teacher in teachers_attendance) ):
+                    teachers_attendance[teacher] = act
+                #登録済みならイベントを確認、更新する
                 else:
-                    attendance_dict[teacher] = event
+                    if(teachers_attendance[teacher].event_type == Event_type.open):
+                        pass
+                    elif(teachers_attendance[teacher].event_type == Event_type.delivered and act.event_type == Event_type.open):
+                        teachers_attendance[teacher].event_type = act.event_type
+                        teachers_attendance[teacher].time_record = act.time_record
+                    elif(teachers_attendance[teacher].event_type == Event_type.processed):
+                        teachers_attendance[teacher].event_type = act.event_type
+                        teachers_attendance[teacher].time_record = act.time_record
 
-        print(attendance_dict)
-        return  render_template("display_activity.html",date=date,attendance_dict=attendance_dict)
+        
+        return  render_template("display_activity.html",teachers_attendance=teachers_attendance)
 
     elif request.method == "POST":
         #該当日のactivity_historyを表示

@@ -3,24 +3,28 @@
 
 {{ date }}
 
-
 <table class="table">
     <thead>
-      <tr>
-        <th scope="col">event</th>
-        <th scope="col">name</th>
-      </tr>
+        <tr>
+            <th>イベント名</th>
+            <th>コーチ氏名</th>
+            <th>日時</th>
+        </tr>
     </thead>
     <tbody>
-      {% for teacher,event in attendance_dict.items() %}
+
+        {% for teacher,act in teachers_attendance.items() %}
         <tr>
-            <th>{{ event }}</th>
-            <th>{{ teacher.last_name + teacher.first_name }}</th>
-            
+            <td>{{ act.event_type }}</td>
+            <td>{{ teacher.last_name + teacher.first_name }}</td>
+            <td>{{ act.time_record }}</td>
         </tr>
-      {% endfor %}
+        {% endfor %}
+        
     </tbody>
-  </table>
+</table>
+
+
 
 
 {% endblock %}
