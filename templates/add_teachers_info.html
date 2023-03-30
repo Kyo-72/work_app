@@ -1,51 +1,70 @@
 {% extends "base.html" %}
 {%block content%}
 
-    <h3>登録済みメールアドレス一覧</h3>
-
-    <p>
-        <select name="address_list" size="10">   
-            {%  for teacher in teachers: %}
-                <option value={{teacher.last_name}}>{{teacher.last_name + " " + teacher.first_name + "\t:\t" + teacher.email_address}}</option>
-            {% endfor %}
+<h3 class="my-3 ml-2">登録済みメールアドレス一覧</h3>
+  <div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>氏名</th>
+                <th>メールアドレス</th>
+                <th>教室</th>
+                <th>学年</th>
                 
-            
-        </select>
-    </p>
-
-
-    <form method="post">
-
-        
-        <h3>名前を入力してください（姓/名）</h3>
-    
-        <label for="last_name">姓:</label>
-    
-        <input type="text" id="last_name" name="last_name" required
-           minlength="1" maxlength="20" size="10">
-    
-        <label for="first_name">名:</label>
-    
-        <input type="text" id="first_name" name="first_name" required
-           minlength="1" maxlength="20" size="10">
-    
-    
-        <h3>メールアドレスを入力してください</h3>
-    
-        <label for="email">Enter your globex.com email:</label>
-        <input type="email" id="email" name="email"  size="30" required>
-
-        <h3>教室を選んでください</h3>
-    
-        <select name="branch_selection">
-            {% for branch in branches %}
-                <option value={{branch.id}}> {{branch.name}} </option>
+            </tr>     
+        </thead>
+       
+        <tbody>
+            {% for teacher in teachers: %}
+            <tr>
+                <td>{{ teacher.last_name + " " + teacher.first_name }}</td>
+                <td>{{ teacher.email_address }}</td>
+                <td>{{ branches[teacher.branch_id - 1].name }}</td>
+                <td>
+                  {% if teacher.grade == 0 %}
+                  社員
+                  {% else %}
+                  {{teacher.grade}}
+                  {% endif %}
+                </td>
+            </tr>
             {% endfor %}
-        </select>
+          </tbody>
+    </table>
+  </div>
 
-        <h3>学年を選んでください</h3>
+    
 
-        <select name="grade">
+    <h3 class="ml-2 mt-5">講師情報追加</h3>
+    <form method="post">
+      <div class="row g-3 mx-2 needs-validation" novalidate>
+
+        <div class="col-md-3">
+          <label for="first_name" class="form-label">姓</label>
+          <input type="text" class="form-control" id="first_name" name="first_name" required>
+        </div>
+        
+        <div class="col-md-3">
+          <label for="last_name" class="form-label">名</label>
+          <input type="text" class="form-control" id="last_name" name="last_name" required>
+        </div>
+
+      </div>
+
+      <div class="row g-3 mx-2 needs-validation" novalidate>
+
+        <div class="col-md-6">
+          <label for="email" class="form-label">メールアドレス</label>
+          <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        
+      </div>
+
+      <div class="row g-3 mx-2 mt-3">
+
+        <div class="col-md-2">
+          <label for="grade" class="form-label">学年</label>
+          <select name="grade">
             {% for grade in  range(7)%}
                 {% if grade == 0 %}
                     <option value={{grade}}> 社員 </option>
@@ -54,13 +73,25 @@
                 {% endif %}
                 
             {% endfor %}
-        </select>
+          </select>
+        </div>
 
+        <div class="col-md-2 ">
+          <label for="branch_selection" class="form-label">教室</label>
+          <select name="branch_selection">
+            {% for branch in branches %}
+                <option value={{branch.id}}> {{branch.name}} </option>
+            {% endfor %}
+          </select>
+        </div>
+   
+      </div>
 
-        <p><input type="submit" value="追加する"></p>
-        
+      <div class="col-md-2 my-4">
+        <button type="submit" class="btn btn-primary">追加する</button>
+      </div>
+
     </form>
-
 
 
 {% endblock %}

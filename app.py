@@ -24,12 +24,15 @@ from flask_bootstrap import Bootstrap
 #DB
 
 app = Flask(__name__)
+app.config['DEBUG'] = True# デバッグモードをTrueにする
 #dbのURLを設定
 db_uri = os.environ.get('DATABASE_URL') or "postgres://postgres:postgres@localhost/work_app"
 db_uri = db_uri.replace("://", "ql://", 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri 
 db = SQLAlchemy(app) 
 bootstrap = Bootstrap(app)
+
+
 
 
 class Event_type(str,enum.Enum):
@@ -200,12 +203,13 @@ def add_teachers_info():
         teacher = Teacher()
 
         #フォームから講師情報を取得
-        teacher.last_name = str( request.form.get("last_name") )
-        teacher.first_name = str( request.form.get("first_name") )
-        teacher.grade = int( request.form.get("grade") )
-        print(teacher.grade)
-        teacher.branch_id =  int( request.form.get("branch_selection") )
-        teacher.email_address = str( request.form.get("email") )
+        teacher.last_name = str( request.form["last_name"] )
+        teacher.first_name = str( request.form["first_name"])
+        teacher.grade = int( request.form["grade"] )
+        teacher.branch_id =  int( request.form["branch_selection"] )
+        teacher.email_address = str( request.form["email"] )
+
+        print(teacher.branch_id)
 
         db.session.add(teacher)
         db.session.commit()
