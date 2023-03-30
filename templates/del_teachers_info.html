@@ -1,18 +1,19 @@
 {% extends "base.html" %}
-{%block content%}
-
-<h3>登録済みメールアドレス一覧</h3>    
+{%block content%} 
     <form method="post">
-        
-        <p>
-            <select name="del_sel" >   
-                {%  for teacher in teachers: %}
-                    <option value= {{teacher.id}}>{{teacher.last_name + " " + teacher.first_name + "\t:\t" + teacher.email_address}}</option>
-                {% endfor %}          
-            </select>
-        </p>     
 
-        <p><input type="submit" value="削除する"></p>
+        <h3 class="my-3 mx-2">登録済みメールアドレス一覧</h3>
+        <div class="mx-2 my-3">
+            <select class="form-select" id="del_sel" name="del_sel">
+              {%  for teacher in teachers: %}
+                <option value= {{teacher.id}}>{{teacher.last_name + " " + teacher.first_name + "\t:\t" + teacher.email_address}}</option>
+              {% endfor %}
+            </select>
+        </div>
+        
+        <div class="my-3 mx-2">
+            <button type="submit" class="btn btn-danger">削除する</button>
+        </div>
         
     </form>
 

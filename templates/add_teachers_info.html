@@ -3,7 +3,7 @@
 
 <h3 class="my-3 ml-2">登録済みメールアドレス一覧</h3>
   <div class="table-responsive">
-    <table class="table">
+    <table class="table text-nowrap h-25">
         <thead>
             <tr>
                 <th>氏名</th>
@@ -64,7 +64,7 @@
 
         <div class="col-md-2">
           <label for="grade" class="form-label">学年</label>
-          <select name="grade">
+          <select class="form-select" name="grade">
             {% for grade in  range(7)%}
                 {% if grade == 0 %}
                     <option value={{grade}}> 社員 </option>
@@ -78,7 +78,7 @@
 
         <div class="col-md-2 ">
           <label for="branch_selection" class="form-label">教室</label>
-          <select name="branch_selection">
+          <select class="form-select" name="branch_selection">
             {% for branch in branches %}
                 <option value={{branch.id}}> {{branch.name}} </option>
             {% endfor %}

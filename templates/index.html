@@ -1,60 +1,61 @@
 {% extends "base.html" %}
 {% block content %}
 
+<h1 class="text-center my-4">
 
-<section class="wrapper">
-    <div class="container">
-        <div class="content">
-            <h2 class="date">
-                {% if exe_date == 0: %}
-            <p>当日</p>
-            {%elif exe_date == 1:%}
-            <p>前日</p>
-            {%elif exe_date == 2:%}
-            <p>2日前</p>
-            {%elif exe_date == 3:%}
-            <p>3日前</p>
-            {% else:%}
-            
-            {% endif %}
+    {% if exe_date == 0: %}
+        当日
+    {%elif exe_date == 1:%}
+        前日
+    {%elif exe_date == 2:%}
+        2日前
+    {%elif exe_date == 3:%}
+        3日前
+    {% else:%}
 
-            </h2>
-            <h2 class="time">
-                {%if exe_min < 10 :%}
-                {{exe_hour}}:0{{exe_min}}
-                {% else: %}
-                {{exe_hour}}:{{exe_min}}
-                {% endif %}
-            </h2>
+    {% endif %}
+</h1>
+
+<h1 class="text-center my-4">
+
+    {%if exe_min < 10 :%}
+    {{exe_hour}}:0{{exe_min}}
+    {% else: %}
+    {{exe_hour}}:{{exe_min}}
+    {% endif %}
+
+</h1>
+
+<form method="post">
+
+
+    <div class="row g-3 mx-2 mt-3">
+
+        <div class="col-md-2">
+            <label for="exe_date" class="form-label">送信日時</label>
+            <select class="form-select" name="exe_date">
+                <option value=0>当日</option>
+                <option value=1>前日</option>
+                <option value=2>二日前</option>
+                <option value=3>三日前</option>
+            </select>
         </div>
-    </div>
-</section>
 
-    
-    
-    
-    <form method="post">
 
-    <p>
-        <label for="exe_date">メール送信日付 : </label>
-        <select name="exe_date">
-        <option value=0>当日</option>
-        <option value=1>前日</option>
-        <option value=2>二日前</option>
-        <option value=3>三日前</option>
-        </select>
-    </p>
-
-        <p>
-            <label for="exe_time">メール送信時間 : </label>
+        <div class="col-md-2 ">
+            <label for="exe_time">メール送信時間</label>
             <input id="exe_time" type="time" name="exe_time"
                    required
                    pattern="[0-9]{2}:[0-9]{2}">
             <span class="validity"></span>
-        </p>
-        
-        
-        <p><input type="submit" value="送信する"></p>
+          </div>
+     
+        </div>
+    </div>
+  
+    <div class="col-md-2 my-4">
+        <button type="submit" class="btn btn-primary">設定する</button>
+    </div>
         
     </form>
     
