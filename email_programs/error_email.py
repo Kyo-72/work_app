@@ -17,7 +17,7 @@ def CreateErrorMail(flag,list):
         
             email_file.write(name + '<br>')
 
-        email_file.write('<br>以下のサイトからメールアドレスの登録を行ってください<br>https://goalfree72.herokuapp.com/add_email')
+        email_file.write('<br>以下のサイトからメールアドレスの登録を行ってください<br>https://nagitsuji-systems.herokuapp.com/add_teachers_info')
         email_file.write('<br>※登録されているのに送信できていない場合は名前が間違えている可能性が高いです（空白が入ってる，漢字が間違えてるなど）')
         email_file.write('<br>※このメールはプログラムから自動で送信されています')
             
@@ -36,14 +36,12 @@ def SendError(gmail_address,gmail_pass,admin_emails,days_later):
     msg = MIMEText(maintext_file.read(),'html',charset)
     msg['Subject'] = Header(execute_date.strftime('ERROR %m/%d(%a)').encode(charset),charset)
 
-    print(gmail_address)
-    print(gmail_pass)
     
     smtp_obj = smtplib.SMTP('smtp.gmail.com',587)
     smtp_obj.ehlo()
     smtp_obj.starttls()
     smtp_obj.login(gmail_address,gmail_pass)
-    smtp_obj.sendmail(gmail_address, gmail_address,msg.as_string())
+    smtp_obj.sendmail(gmail_address, admin_emails,msg.as_string())
 
     maintext_file.close()
     smtp_obj.quit()
