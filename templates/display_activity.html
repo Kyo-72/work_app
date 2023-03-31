@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {%block content%}
 
+{% set Event_type = {"open": "open", "delivered": "delivered", "processed": "processed"} %}
+
+
 <form method="post">
 
     <div class="row g-3 m-3">
@@ -30,14 +33,15 @@
         {% for teacher,act in teachers_attendance.items() %}
         <tr>
             <td> 
-                {% if act.event_type == "Event_type.open" %}
-                    open
-                {% elif act.event_type == "Event_type.delivered" %}
-                    delivered
-                {% elif act.event_type == "Event_type.processed" %}
-                    processed
+                {% if act.event_type == Event_type.open %}
+                    <i class="bi bi-envelope-open"></i> 開封済み
+                {% elif act.event_type == Event_type.delivered %}
+                    <i class="bi bi-envelope-fill"></i> 送信済み
+                {% elif act.event_type == Event_type.processed %}
+                    <i class="bi bi-slash-square"></i> 保留中
                 {% else %}
-                    <i class="bi bi-envelope-open"></i>
+                    
+                    
                 {% endif %}
                 
             </td>
