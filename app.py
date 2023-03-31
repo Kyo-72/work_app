@@ -366,8 +366,11 @@ def mail_history(date = today):
 
     elif request.method == "POST":
         #該当日のactivity_historyを表示
-        # return redirect("/display_activity",date)
-        pass
+        date = str( request.form["calendar"] )
+        if(len(date) == 0):
+            return redirect("/display_activity")
+        else:
+            return redirect("/display_activity/" + date)
 
 
 

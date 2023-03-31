@@ -1,9 +1,23 @@
 {% extends "base.html" %}
 {%block content%}
 
-{{ date }}
+<form method="post">
 
-<table class="table">
+    <div class="row g-3 m-3">
+        <div class="col-md-2">
+            <input type="text" class="form-control" name="calendar" id="calendar" placeholder="クリックして日時設定">
+            <script>
+                flatpickr('#calendar',{
+                    locale: 'ja',
+                });
+            </script>
+
+        </div>
+    </div>
+</form>
+
+
+<table class="table m-3">
     <thead>
         <tr>
             <th>イベント名</th>
@@ -15,7 +29,18 @@
 
         {% for teacher,act in teachers_attendance.items() %}
         <tr>
-            <td>{{ act.event_type }}</td>
+            <td> 
+                {% if act.event_type == "Event_type.open" %}
+                    open
+                {% elif act.event_type == "Event_type.delivered" %}
+                    delivered
+                {% elif act.event_type == "Event_type.processed" %}
+                    processed
+                {% else %}
+                    <i class="bi bi-envelope-open"></i>
+                {% endif %}
+                
+            </td>
             <td>{{ teacher.last_name + teacher.first_name }}</td>
             <td>{{ act.time_record }}</td>
         </tr>
@@ -28,3 +53,5 @@
 
 
 {% endblock %}
+
+<!-- mail open <i class="bi bi-envelope-open"></i> -->

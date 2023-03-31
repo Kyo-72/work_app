@@ -1,3 +1,6 @@
+@import 'flatpickr/dist/flatpickr.min.css';
+
+
 @media (max-height:700px) {
   .table {
     height: 700px
