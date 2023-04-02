@@ -3,7 +3,7 @@ import enum
 import json,pprint
 from flask import Flask
 from apscheduler.schedulers.background import BackgroundScheduler
-from flask import render_template,request,redirect
+from flask import render_template,request,redirect,url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from email_programs import main
@@ -362,7 +362,7 @@ def mail_history(date = today):
                         teachers_attendance[teacher].time_record = act.time_record
 
         
-        return  render_template("display_activity.html",teachers_attendance=teachers_attendance)
+        return  render_template("display_activity.html",teachers_attendance=teachers_attendance,date=date)
 
     elif request.method == "POST":
         #該当日のactivity_historyを表示

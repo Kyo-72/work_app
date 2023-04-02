@@ -27,39 +27,41 @@
 </form>
 
 
-<table class="table m-3">
-    <thead>
-        <tr>
-            <th>イベント名</th>
-            <th>コーチ氏名</th>
-            <th>日時</th>
-        </tr>
-    </thead>
-    <tbody>
+<div class="form-group">
+    <label for="table-m3" class="ml-3">{{date}}の出勤メール</label>
+    <table class="table m-3">
+        <thead>
+            <tr>
+                <th>イベント名</th>
+                <th>コーチ氏名</th>
+                <th>日時</th>
+            </tr>
+        </thead>
+        <tbody>
 
-        {% for teacher,act in teachers_attendance.items() %}
-        <tr>
-            <td> 
-                {% if act.event_type == Event_type.open %}
-                    <i class="bi bi-envelope-open"></i> 開封済み
-                {% elif act.event_type == Event_type.delivered %}
-                    <i class="bi bi-envelope-fill"></i> 送信済み
-                {% elif act.event_type == Event_type.processed %}
-                    <i class="bi bi-slash-square"></i> 保留中
-                {% else %}
+            {% for teacher,act in teachers_attendance.items() %}
+            <tr>
+                <td> 
+                    {% if act.event_type == Event_type.open %}
+                        <i class="bi bi-envelope-open"></i> 開封済み
+                    {% elif act.event_type == Event_type.delivered %}
+                        <i class="bi bi-envelope-fill"></i> 送信済み
+                    {% elif act.event_type == Event_type.processed %}
+                        <i class="bi bi-slash-square"></i> 保留中
+                    {% else %}
+                        
+                        
+                    {% endif %}
                     
-                    
-                {% endif %}
-                
-            </td>
-            <td>{{ teacher.last_name + teacher.first_name }}</td>
-            <td>{{ act.time_record }}</td>
-        </tr>
-        {% endfor %}
-        
-    </tbody>
-</table>
-
+                </td>
+                <td>{{ teacher.last_name + teacher.first_name }}</td>
+                <td>{{ act.time_record }}</td>
+            </tr>
+            {% endfor %}
+            
+        </tbody>
+    </table>
+</div>>
 
 
 
